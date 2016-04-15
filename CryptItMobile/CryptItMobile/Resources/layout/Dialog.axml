@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2e72a3"
+        android:orientation="horizontal">
+        <Button
+            android:background="@drawable/rectangle_rounded_all"
+            android:gravity="top|center_horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="#ffffff"
+            android:layout_alignParentLeft="true"
+            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:text="Друзья"
+            android:id="@+id/friendsDialogButton"
+            android:layout_marginRight="5dp" />
+        <Button
+            android:background="@drawable/rectangle_rounded_all"
+            android:gravity="top|center_horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="#ffffff"
+            android:layout_alignParentRight="true"
+            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:text="Выход"
+            android:id="@+id/exitDialogButton"
+            android:layout_marginRight="5dp" />
+    </RelativeLayout>
+    <EditText
+        android:background="#cee2f2"
+        android:textColor="#5B7FA6"
+        android:layout_height="60dp"
+        android:hint="Введите имя друга..."
+        android:paddingLeft="5dp"
+        android:layout_width="match_parent"
+        android:id="@+id/messageEditText" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:background="@drawable/rectangle_rounded_all"
+            android:textColor="#ffffff"
+            android:layout_height="30dp"
+            android:gravity="top|center_horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Прикрепить"
+            android:id="@+id/attachFileButton" />
+        <Button
+            android:background="@drawable/rectangle_rounded_all"
+            android:textColor="#ffffff"
+            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="top|center_horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Зашифровать"
+            android:layout_weight="1"
+            android:layout_toRightOf="@+id/attachFileButton"
+            android:id="@+id/criptButton" />
+        <Button
+            android:background="@drawable/rectangle_rounded_all"
+            android:gravity="top|center_horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="#ffffff"
+            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:text="Отправить"
+            android:layout_toRightOf="@+id/criptButton"
+            android:id="@+id/enterButton"
+            android:layout_marginRight="5dp" />
+    </LinearLayout>
+    <ListView
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/dialogListView" />
+</LinearLayout>

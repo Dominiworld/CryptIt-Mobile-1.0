@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:scaleType="centerCrop"
+        android:layout_marginLeft="5dp"
+        android:layout_toLeftOf="@+id/friendTextView"
+        android:id="@+id/friendImageView" />
+    <TextView
+        android:gravity="left"
+        android:paddingLeft="5dp"
+        android:paddingTop="10dp"
+        android:textSize="20sp"
+        android:textColor="#2B587A"
+        android:layout_height="40dp"
+        android:layout_width="300dp"
+        android:layout_toRightOf="@+id/friendImageView"
+        android:id="@+id/friendTextView" />
+    <TextView
+        android:paddingRight="5dp"
+        android:textSize="15sp"
+        android:textColor="#ffffff"
+        android:layout_height="10dp"
+        android:layout_width="10dp"
+        android:layout_toRightOf="@+id/friendTextView"
+        android:id="@+id/newMassageTextView" />
+    <ImageView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_toLeftOf="@+id/friendTextView"
+        android:id="@+id/onlineImageView" />
+</LinearLayout>

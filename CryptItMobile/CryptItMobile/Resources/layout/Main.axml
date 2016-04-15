@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2e72a3"
+        android:orientation="horizontal">
+        <Button
+            android:background="@drawable/rectangle_rounded_all"
+            android:gravity="top|center_horizontal"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="#ffffff"
+            android:layout_alignParentRight="true"
+            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:text="Выход"
+            android:id="@+id/exitMainButton"
+            android:layout_marginRight="5dp" />
+    </RelativeLayout>
+    <EditText
+        android:paddingLeft="5dp"
+        android:background="#FFFFFF"
+        android:textColor="#5B7FA6"
+        android:hint="Введите имя друга..."
+        android:layout_height="35dp"
+        android:layout_width="match_parent"
+        android:id="@+id/searchEditText" />
+    <ListView
+        android:background="#cee2f2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/friendsListView"
+        RowHeight="150dp"
+        SeparatorVisibility="Default" />
+</LinearLayout>
