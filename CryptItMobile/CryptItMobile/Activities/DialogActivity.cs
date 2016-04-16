@@ -1,4 +1,5 @@
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
@@ -52,6 +53,13 @@ namespace CryptItMobile.Activities
                     _dialogAdapter.GetMessages(friendId); 
                 }
                 
+            };
+
+            FindViewById<Button>(Resource.Id.exitDialogButton).Click += (sender, e) =>
+            {
+                var intent = new Intent(this, typeof(StartActivity));
+                intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
+                StartActivity(intent);
             };
         }
 

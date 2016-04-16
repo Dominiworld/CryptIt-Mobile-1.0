@@ -1,24 +1,16 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-
-using Android.App;
 using Android.Content;
 using Android.Graphics;
-using Android.OS;
-using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Java.Lang;
-using Javax.Crypto.Interfaces;
 using Model;
 using vkAPI;
 
 namespace CryptItMobile.Adapters
 {
-    public class FriendsAdapter: BaseAdapter
+    public class FriendsAdapter: BaseAdapter//todo Оптимизировать загрузку картинок
     {
         private LayoutInflater lInflater;
         private UserService _userService = new UserService();
@@ -48,7 +40,10 @@ namespace CryptItMobile.Adapters
 
 
             view.FindViewById<TextView>(Resource.Id.friendTextView).Text = _friends[position].FullName;
-            //todo Сделать точку для друзей в онлайне
+            if (_friends[position].Status == "Online")
+            {
+                view.FindViewById<ImageView>(Resource.Id.onlineImageView).Visibility= ViewStates.Visible;
+            }
             return view;
         }
 

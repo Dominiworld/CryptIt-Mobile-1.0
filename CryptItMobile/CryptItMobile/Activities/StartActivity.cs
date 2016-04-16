@@ -8,12 +8,13 @@ using vkAPI;
 
 namespace CryptItMobile.Activities
 {
-    [Activity(Label = "StartActivity",  MainLauncher = true, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+    [Activity(Label = "CryptIt Mobile",  MainLauncher = true, Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class StartActivity : Activity
     {
-        WebView webView;
+        private WebView _webView;
         private static readonly string AuthorizeUrl = AuthorizeService.Instance.GetAuthorizeUrl(5296011);
         private static Context _ctx;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -21,18 +22,26 @@ namespace CryptItMobile.Activities
             // Create your application here
             SetContentView(Resource.Layout.Start);
             _ctx = this;
-            webView = FindViewById<WebView>(Resource.Id.webView);
-            webView.SetWebViewClient(new MyWebViewClient());
-            webView.LoadUrl(AuthorizeUrl);
+            _webView = FindViewById<WebView>(Resource.Id.webView);
+
+            _webView.SetWebViewClient(new MyWebViewClient());
+            _webView.LoadUrl(AuthorizeUrl);
+        }
+
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+            _webView.LoadUrl(AuthorizeUrl);
         }
 
         public class MyWebViewClient : WebViewClient
         {
+
             public override bool ShouldOverrideUrlLoading(WebView view, string url)
             {
                 view.LoadUrl(url);
                 var parseRef = new URL(url).Ref;
-                if (parseRef!=null)
+                if (parseRef != null)
                 {
                     var parseFields = parseRef.Split('&');
 
@@ -43,7 +52,7 @@ namespace CryptItMobile.Activities
                     var intent = new Intent(_ctx, typeof(MainActivity));//todo ѕодумать, как сделать по-нормальному
                     _ctx.StartActivity(intent);
                 }
-                
+
                 return false;
             }
         }

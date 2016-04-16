@@ -37,6 +37,15 @@ namespace CryptItMobile.Activities
                 intent.PutExtra("FriendId", _friendsAdapter._friends[e.Position].Id);//todo переделать когда перенесу друзей в активити
                 StartActivity(intent);
             };
+
+
+            FindViewById<Button>(Resource.Id.exitMainButton).Click += (sender, e) =>
+            {
+                var intent = new Intent(this, typeof(StartActivity));
+                intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
+                StartActivity(intent);
+            };
+            
         }
 
         
