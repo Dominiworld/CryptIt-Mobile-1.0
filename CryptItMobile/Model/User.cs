@@ -8,7 +8,7 @@ namespace Model
 {
     public class User: INotifyPropertyChanged
     {
-        private int? _numberOfNewMessages;
+        private int _numberOfNewMessages;
 
         [JsonProperty("id")]
         public int Id { get; set; }
@@ -38,7 +38,7 @@ namespace Model
 
         public string FullName => LastName + " " + FirstName;
 
-        public int? NumberOfNewMessages
+        public int NumberOfNewMessages
         {
             get { return _numberOfNewMessages; }
             set

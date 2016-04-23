@@ -111,6 +111,9 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f050002
 			public const int messageEditText = 2131034114;
 			
+			// aapt resource value: 0x7f050012
+			public const int myMessageIsReadTextView = 2131034130;
+			
 			// aapt resource value: 0x7f050011
 			public const int myMessageTextView = 2131034129;
 			
@@ -118,7 +121,7 @@ namespace CryptItMobile
 			public const int myMessageTimeTextView = 2131034128;
 			
 			// aapt resource value: 0x7f050009
-			public const int newMassageTextView = 2131034121;
+			public const int newMessageTextView = 2131034121;
 			
 			// aapt resource value: 0x7f05000a
 			public const int onlineImageView = 2131034122;
@@ -126,8 +129,8 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f05000e
 			public const int searchEditText = 2131034126;
 			
-			// aapt resource value: 0x7f050012
-			public const int webView = 2131034130;
+			// aapt resource value: 0x7f050013
+			public const int webView = 2131034131;
 			
 			static Id()
 			{

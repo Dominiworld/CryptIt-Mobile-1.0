@@ -24,4 +24,9 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/myMessageTextView" />
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="Is not read"
+        android:id="@+id/myMessageIsReadTextView" />
 </LinearLayout>

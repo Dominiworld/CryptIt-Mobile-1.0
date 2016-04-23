@@ -4,6 +4,7 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
 using CryptItMobile.Adapters;
+using vkAPI;
 
 namespace CryptItMobile.Activities
 {
@@ -24,6 +25,12 @@ namespace CryptItMobile.Activities
             _friendsAdapter = new FriendsAdapter(this);
             _friendsListView.Adapter = _friendsAdapter;
 
+            LongPollServerService.Instance.ConnectToLongPollServer();
+
+            LongPollServerService.Instance.GotNewMessageEvent += _friendsAdapter.NewMessage;
+            LongPollServerService.Instance.MessageStateChangedToReadEvent += _friendsAdapter.MessageStateChangedToRead;
+            LongPollServerService.Instance.UserBecameOnlineOrOfflineEvent += _friendsAdapter.UserBecameOnlineOrOffline;
+
             _searchEditText = FindViewById<EditText>(Resource.Id.searchEditText);
 
             _searchEditText.TextChanged += (sender, e) =>
@@ -34,7 +41,7 @@ namespace CryptItMobile.Activities
             _friendsListView.ItemClick += (sender, e) =>
             {
                 var intent = new Intent(this, typeof(DialogActivity));
-                intent.PutExtra("FriendId", _friendsAdapter._friends[e.Position].Id);//todo переделать когда перенесу друзей в активити
+                intent.PutExtra("FriendId", _friendsAdapter.GetItemId(e.Position));//todo переделать когда перенесу друзей в активити
                 StartActivity(intent);
             };
 

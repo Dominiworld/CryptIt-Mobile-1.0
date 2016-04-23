@@ -5,6 +5,8 @@ namespace vkAPI
 {
     public class LongPollServerService:BaseService
     {
+        public static readonly LongPollServerService Instance=new LongPollServerService();
+
         public delegate void GotNewMessage(Message message);
 
         public delegate void MessageStateChangedToRead(int lastReadId, int peerId);
@@ -56,10 +58,10 @@ namespace vkAPI
                             MessageStateChangedToReadEvent?.Invoke(lastReadMessageId, userId);
                             break;
                         case 8:
-                            UserBecameOnlineOrOfflineEvent?.Invoke(int.Parse(update[0].ToString()), true);
+                            UserBecameOnlineOrOfflineEvent?.Invoke(-1 * int.Parse(update[1].ToString()), true);
                             break;
                         case 9:
-                            UserBecameOnlineOrOfflineEvent?.Invoke(int.Parse(update[0].ToString()), false);
+                            UserBecameOnlineOrOfflineEvent?.Invoke(-1 * int.Parse(update[1].ToString()), false);
                             break;
                         default:
                             break;
