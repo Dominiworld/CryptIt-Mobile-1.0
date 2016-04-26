@@ -35,7 +35,7 @@ namespace CryptItMobile.Activities
             _dialogAdapter = new DialogAdapter(this, friendId);
 
             LongPollServerService.Instance.GotNewMessageEvent += _dialogAdapter.NewMessage;
-            LongPollServerService.Instance.MessageStateChangedToReadEvent += _dialogAdapter.MessageStateChangedToRead;
+            LongPollServerService.Instance.OutMessageStateChangedToReadEvent += _dialogAdapter.MessageStateChangedToRead;
 
             _dialogListView.Adapter = _dialogAdapter;
 
@@ -49,26 +49,30 @@ namespace CryptItMobile.Activities
             };
 
             //todo сделать loader
-            //todo Попробовать перенести всю логику из адаптера в отдельный класс
 
             bool isReady=true;
+
             _dialogListView.Scroll += async (sender, e) =>
             {
-                if (_dialogListView.LastVisiblePosition == _dialogAdapter.Count - 1
-                && _dialogAdapter.Count % 20 == 0 //При одном запросе тягается 20 сообщений
+                if (_dialogListView.FirstVisiblePosition == 0//Подгрузка при прокрутке до начала листа
                 && _dialogAdapter.Count != 0
                 &&isReady)
                 {
                     isReady = false;
+                    int oldCount = _dialogAdapter.Count;
                     await _dialogAdapter.GetMessagesAsync(friendId);
-                    isReady = true;
+                    if (_dialogAdapter.Count - oldCount!=0)
+                    {
+                        _dialogListView.SetSelection(_dialogAdapter.Count - oldCount);
+                        isReady = true;
+                    }
                 }
-
             };
 
             FindViewById<Button>(Resource.Id.exitDialogButton).Click += (sender, e) =>
             {
                 var intent = new Intent(this, typeof(StartActivity));
+                LongPollServerService.Instance.GotNewMessageEvent -= _dialogAdapter.NewMessage;
                 intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
                 StartActivity(intent);
             };
@@ -76,7 +80,8 @@ namespace CryptItMobile.Activities
             FindViewById<Button>(Resource.Id.friendsDialogButton).Click += (sender, e) =>//todo Попробовать переделать с помощью ActionBar.SetDisplayHomeAsUpEnabled(true);
             {
                 var intent = new Intent(this, typeof(MainActivity));
-                intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
+                LongPollServerService.Instance.GotNewMessageEvent -= _dialogAdapter.NewMessage;
+                intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);            
                 StartActivity(intent);
             };
         }
@@ -86,6 +91,7 @@ namespace CryptItMobile.Activities
         {
             await _messageService.SendMessage(friendId, _messageText.Text);
         }
+
 
         
     }

@@ -124,6 +124,7 @@ namespace CryptItMobile.Adapters
                     {
                         imageBitmap = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
                         friend.Avatar = imageBitmap;
+                        NotifyDataSetChanged();
                     }
                 }    
             }

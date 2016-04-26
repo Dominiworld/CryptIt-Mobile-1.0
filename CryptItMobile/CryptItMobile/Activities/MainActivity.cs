@@ -28,7 +28,7 @@ namespace CryptItMobile.Activities
             LongPollServerService.Instance.ConnectToLongPollServer();
 
             LongPollServerService.Instance.GotNewMessageEvent += _friendsAdapter.NewMessage;
-            LongPollServerService.Instance.MessageStateChangedToReadEvent += _friendsAdapter.MessageStateChangedToRead;
+            LongPollServerService.Instance.InMessageStateChangedToReadEvent += _friendsAdapter.MessageStateChangedToRead;
             LongPollServerService.Instance.UserBecameOnlineOrOfflineEvent += _friendsAdapter.UserBecameOnlineOrOffline;
 
             _searchEditText = FindViewById<EditText>(Resource.Id.searchEditText);

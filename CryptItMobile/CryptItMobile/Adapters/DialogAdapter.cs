@@ -50,6 +50,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
         public override View GetView(int position, View convertView, ViewGroup parent)//todo припилить convertView
         {
             View view;
+            position = Count-1 - position;
             if (!_messages[position].Out)//Заполнение сообщения от друга
             {
                 view = lInflater.Inflate(Resource.Layout.FriendMessage, null, false);
@@ -73,11 +74,11 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             return view;
         }
 
-        //public void AddMessages(List<Message> messages)
-        //{
-        //    _messages.AddRange(messages);
-        //    NotifyDataSetChanged();
-        //}
+        public void AddMessages(List<Message> messages)
+        {
+            _messages.AddRange(messages);
+            NotifyDataSetChanged();
+        }
 
         public void NewMessage(Message message) //todo на рефакторинг 
         {
@@ -97,7 +98,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
                     message.IsNotRead = true;
                 }
                 _messages.Insert(0, message);
-
+                //_messages.Add(message);
                 NotifyDataSetChanged();
             }          
         }
@@ -117,13 +118,18 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             }
         }
 
-
+        //Для первой пачки сообщений
         private async void GetMessages(int friendId) //todo попробовать вынести в отдельный класс
         {
-            _messages.AddRange((await _messageService.GetDialog(friendId, Count)).ToList());
+            
+            _messages.AddRange((await _messageService.GetDialog(friendId)).ToList());
+            List<int> messageList = _messages.Where(m => !m.Out).Select(m => m.Id).ToList();
+            _messageService.MarkMessagesAsRead(messageList, friendId);
             NotifyDataSetChanged();
         }
 
+        //Для остальных
+        //todo Есть одно лишнее обращение для тех, у кого сообщений в диалоге<20. Фиксить можно доп условием в активити, но надо ли?
         public async Task GetMessagesAsync(int friendId) //todo попробовать вынести в отдельный класс
         {
             _messages.AddRange((await _messageService.GetDialog(friendId, Count)).ToList());

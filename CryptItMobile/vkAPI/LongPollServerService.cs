@@ -3,20 +3,24 @@ using Newtonsoft.Json;
 
 namespace vkAPI
 {
-    public class LongPollServerService:BaseService
+    public class LongPollServerService : BaseService
     {
-        public static readonly LongPollServerService Instance=new LongPollServerService();
+        public static readonly LongPollServerService Instance = new LongPollServerService();
 
         public delegate void GotNewMessage(Message message);
 
-        public delegate void MessageStateChangedToRead(int lastReadId, int peerId);
+        public delegate void OutMessageStateChangedToRead(int lastReadId, int peerId);
+        public delegate void InMessageStateChangedToRead(int lastReadId, int peerId);
+
 
         public delegate void UserBecameOnlineOrOffline(int userId, bool online); //online = 1, если стал онлайн
         //=0, если стал оффлайн
 
         public event GotNewMessage GotNewMessageEvent;
 
-        public event MessageStateChangedToRead MessageStateChangedToReadEvent;
+        public event OutMessageStateChangedToRead OutMessageStateChangedToReadEvent;
+        public event InMessageStateChangedToRead InMessageStateChangedToReadEvent;
+
         public event UserBecameOnlineOrOffline UserBecameOnlineOrOfflineEvent;
         public async void ConnectToLongPollServer(bool useSsl = true, bool needPts = true)
         {
@@ -52,10 +56,17 @@ namespace vkAPI
                             };
                             GotNewMessageEvent?.Invoke(message);
                             break;
-                        case 7:
+                        //прочтение входящих сообщений
+                        case 6:
                             var userId = int.Parse(update[1].ToString());
                             var lastReadMessageId = int.Parse(update[2].ToString());
-                            MessageStateChangedToReadEvent?.Invoke(lastReadMessageId, userId);
+                            InMessageStateChangedToReadEvent?.Invoke(lastReadMessageId, userId);
+                            break;
+                        case 7:
+                            //прочтение исходящих сообщений
+                            var userId1 = int.Parse(update[1].ToString());
+                            var lastReadMessageId1 = int.Parse(update[2].ToString());
+                            OutMessageStateChangedToReadEvent?.Invoke(lastReadMessageId1, userId1);
                             break;
                         case 8:
                             UserBecameOnlineOrOfflineEvent?.Invoke(-1 * int.Parse(update[1].ToString()), true);
