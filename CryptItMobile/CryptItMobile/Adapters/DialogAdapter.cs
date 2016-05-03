@@ -14,7 +14,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
         private List<Message> _messages;
         private MessageService _messageService = new MessageService();
         private LayoutInflater lInflater;
-        
+
         private int _friendId;//todo подумать над этим
 
         public DialogAdapter(Context context, int friendId)
@@ -98,7 +98,6 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
                     message.IsNotRead = true;
                 }
                 _messages.Insert(0, message);
-                //_messages.Add(message);
                 NotifyDataSetChanged();
             }          
         }
@@ -121,20 +120,17 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
         //Для первой пачки сообщений
         private async void GetMessages(int friendId) //todo попробовать вынести в отдельный класс
         {
-            
-            _messages.AddRange((await _messageService.GetDialog(friendId)).ToList());
-            List<int> messageList = _messages.Where(m => !m.Out).Select(m => m.Id).ToList();
+            var messages = (await _messageService.GetDialog(friendId)).ToList();
+            foreach (var message in messages)
+            {
+                //message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
+            }
+            List<int> messageList = messages.Where(m => !m.Out).Select(m => m.Id).ToList();
             _messageService.MarkMessagesAsRead(messageList, friendId);
-            NotifyDataSetChanged();
+            AddMessages(messages);
         }
 
-        //Для остальных
-        //todo Есть одно лишнее обращение для тех, у кого сообщений в диалоге<20. Фиксить можно доп условием в активити, но надо ли?
-        public async Task GetMessagesAsync(int friendId) //todo попробовать вынести в отдельный класс
-        {
-            _messages.AddRange((await _messageService.GetDialog(friendId, Count)).ToList());
-            NotifyDataSetChanged();
-        }
+        
 
     }
 }

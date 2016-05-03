@@ -53,6 +53,7 @@
     <Compile Include="Adapters\FriendsAdapter.cs" />
     <Compile Include="Activities\DialogActivity.cs" />
     <Compile Include="Activities\MainActivity.cs" />
+    <Compile Include="FileWorker.cs" />
     <Compile Include="Model\AndroidUser.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -94,6 +95,10 @@
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CryptingTool\CryptingTool.csproj">
+      <Project>{95fc244e-4bf3-4c84-84fe-6cf793effd57}</Project>
+      <Name>CryptingTool</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{70b36cdb-212c-45dc-ae7d-15a306489fc0}</Project>
       <Name>Model</Name>

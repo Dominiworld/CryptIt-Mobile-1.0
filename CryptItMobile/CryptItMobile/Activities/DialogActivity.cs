@@ -21,7 +21,6 @@ namespace CryptItMobile.Activities
         private Button _sendButton;
         private EditText _messageText; 
         private MessageService _messageService=new MessageService();
-        //private LongPollServerService _longPollServerService=new LongPollServerService();
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -54,18 +53,14 @@ namespace CryptItMobile.Activities
 
             _dialogListView.Scroll += async (sender, e) =>
             {
-                if (_dialogListView.FirstVisiblePosition == 0//Подгрузка при прокрутке до начала листа
-                && _dialogAdapter.Count != 0
-                &&isReady)
+                if (_dialogListView.FirstVisiblePosition != 0 || _dialogAdapter.Count == 0 || !isReady) return;
+                isReady = false;
+                var oldCount = _dialogAdapter.Count;
+                await GetMessagesAsync(friendId);
+                if (_dialogAdapter.Count - oldCount!=0)
                 {
-                    isReady = false;
-                    int oldCount = _dialogAdapter.Count;
-                    await _dialogAdapter.GetMessagesAsync(friendId);
-                    if (_dialogAdapter.Count - oldCount!=0)
-                    {
-                        _dialogListView.SetSelection(_dialogAdapter.Count - oldCount);
-                        isReady = true;
-                    }
+                    _dialogListView.SetSelection(_dialogAdapter.Count - oldCount);
+                    isReady = true;
                 }
             };
 
@@ -89,11 +84,22 @@ namespace CryptItMobile.Activities
 
         private async void SendMessage(int friendId)
         {
-            await _messageService.SendMessage(friendId, _messageText.Text);
+            //var cryptedMessage = CryptingTool.CryptTool.Instance.MakingEnvelope(_messageText.Text);
+            //await _messageService.SendMessage(friendId, cryptedMessage);
         }
 
+        //Для остальных
+        //todo Есть одно лишнее обращение для тех, у кого сообщений в диалоге<20. Фиксить можно доп условием в активити, но надо ли?
+        public async Task GetMessagesAsync(int friendId) //todo попробовать вынести в отдельный класс
+        {
+            var messages = (await _messageService.GetDialog(friendId, _dialogAdapter.Count)).ToList();
+            foreach (var message in messages)
+            {
+                //message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
+            }
+            _dialogAdapter.AddMessages(messages);
+        }
 
-        
     }
 }
 
