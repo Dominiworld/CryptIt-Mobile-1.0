@@ -23,13 +23,14 @@ namespace CryptItMobile.Activities
             base.OnCreate(bundle);
 
             SetContentView(Resource.Layout.Main);
-            
-            var fileWorker=new FileWorker(this);
+
+            var fileWorker = new FileWorker();
             if (!fileWorker.FillKeys())
             {
-                CryptingTool.CryptTool.Instance.CreateRSAKey();
+                CryptTool.Instance.CreateRSAKey();
                 fileWorker.SavePrivateAndPublicKey();
             }
+            fileWorker.AddFriendKeys();
 
             _friendsListView = FindViewById<ListView>(Resource.Id.friendsListView);
             _friendsAdapter = new FriendsAdapter(this);
@@ -50,8 +51,9 @@ namespace CryptItMobile.Activities
 
             _friendsListView.ItemClick += (sender, e) =>
             {
+                _friendsAdapter.SetFriendKey(e.Position);
                 var intent = new Intent(this, typeof(DialogActivity));
-                intent.PutExtra("FriendId", _friendsAdapter.GetItemId(e.Position));//todo переделать когда перенесу друзей в активити
+                intent.PutExtra("FriendId", _friendsAdapter.GetItemId(e.Position));
                 StartActivity(intent);
             };
 

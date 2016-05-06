@@ -18,7 +18,8 @@ namespace CryptItMobile.Adapters
         private LayoutInflater lInflater;
         private UserService _userService = new UserService();
         private List<AndroidUser> _friends;//Друзья отображаемые при поиске
-        private List<AndroidUser> _allFriends;//список всх друзей, чтобы не грузить по несколько раз
+        private List<AndroidUser> _allFriends;//список всех друзей, чтобы не грузить по несколько раз
+        private FileWorker _fileWorker=new FileWorker();
 
         public FriendsAdapter(Context context)
         {
@@ -30,6 +31,12 @@ namespace CryptItMobile.Adapters
         public override long GetItemId(int position)
         {
             return _friends[position].User.Id;
+        }
+
+        public void SetFriendKey(int position)
+        {
+            _fileWorker.SetFriendKey(_friends[position]);
+            CryptingTool.CryptTool.Instance.keyRSARemote = _friends[position].PublicKey;
         }
 
         public override View GetView(int position, View convertView, ViewGroup parent)
@@ -65,6 +72,7 @@ namespace CryptItMobile.Adapters
         {
             return null;
         }
+
 
         public override int Count
         {

@@ -4,6 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
+    <ImageView
+        android:layout_height="50dp"
+        android:layout_width="50dp"
+        android:scaleType="centerCrop"
+        android:layout_marginLeft="5dp"
+        android:id="@+id/dialogFriendImageView" />
+    <TextView
+        android:gravity="left"
+        android:paddingLeft="5dp"
+        android:paddingTop="10dp"
+        android:textSize="20sp"
+        android:textColor="#2B587A"
+        android:layout_height="40dp"
+        android:layout_width="300dp"
+        android:id="@+id/dialogFriendTextView" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,31 +63,6 @@
         android:orientation="horizontal">
         <Button
             android:background="@drawable/rectangle_rounded_all"
-            android:textColor="#ffffff"
-            android:layout_height="30dp"
-            android:gravity="top|center_horizontal"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="Прикрепить"
-            android:id="@+id/attachFileButton" />
-        <Button
-            android:background="@drawable/rectangle_rounded_all"
-            android:textColor="#ffffff"
-            android:layout_height="30dp"
-            android:layout_width="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:gravity="top|center_horizontal"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="Зашифровать"
-            android:layout_weight="1"
-            android:layout_toRightOf="@+id/attachFileButton"
-            android:id="@+id/criptButton" />
-        <Button
-            android:background="@drawable/rectangle_rounded_all"
             android:gravity="top|center_horizontal"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -81,7 +71,6 @@
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:text="Отправить"
-            android:layout_toRightOf="@+id/criptButton"
             android:id="@+id/enterButton"
             android:layout_marginRight="5dp" />
     </LinearLayout>

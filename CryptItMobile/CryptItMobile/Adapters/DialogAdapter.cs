@@ -92,6 +92,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
                     message.IsNotRead = false;
                     List<int> messageList = new List<int> {message.Id};
                     _messageService.MarkMessagesAsRead(messageList, message.UserId);
+                    message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
                 }
                 else
                 {
@@ -123,7 +124,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             var messages = (await _messageService.GetDialog(friendId)).ToList();
             foreach (var message in messages)
             {
-                //message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
+                message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
             }
             List<int> messageList = messages.Where(m => !m.Out).Select(m => m.Id).ToList();
             _messageService.MarkMessagesAsRead(messageList, friendId);

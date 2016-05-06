@@ -7,5 +7,6 @@ namespace CryptItMobile.Model
     {
         public User User { get; set; }
         public Bitmap Avatar {get; set; }
+        public byte[] PublicKey { get; set; }
     }
 }
