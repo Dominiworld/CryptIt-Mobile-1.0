@@ -1,0 +1,15 @@
+﻿using Newtonsoft.Json;
+
+namespace Model
+{
+    public class LongPollConnectionSettings
+    {
+        [JsonProperty("key")]
+        public string Key { get; set; }
+        [JsonProperty("server")]
+        public string Adress { get; set; }
+        [JsonProperty("ts")]
+        public int TS { get; set; }
+
+    }
+}
