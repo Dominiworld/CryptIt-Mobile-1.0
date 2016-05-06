@@ -72,11 +72,11 @@ namespace CryptItMobile
 		public partial class Id
 		{
 			
-			// aapt resource value: 0x7f050003
-			public const int attachFileButton = 2131034115;
+			// aapt resource value: 0x7f050000
+			public const int dialogFriendImageView = 2131034112;
 			
-			// aapt resource value: 0x7f050004
-			public const int criptButton = 2131034116;
+			// aapt resource value: 0x7f050001
+			public const int dialogFriendTextView = 2131034113;
 			
 			// aapt resource value: 0x7f050006
 			public const int dialogListView = 2131034118;
@@ -84,8 +84,8 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f050005
 			public const int enterButton = 2131034117;
 			
-			// aapt resource value: 0x7f050001
-			public const int exitDialogButton = 2131034113;
+			// aapt resource value: 0x7f050003
+			public const int exitDialogButton = 2131034115;
 			
 			// aapt resource value: 0x7f05000d
 			public const int exitMainButton = 2131034125;
@@ -102,14 +102,17 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f050007
 			public const int friendTextView = 2131034119;
 			
-			// aapt resource value: 0x7f050000
-			public const int friendsDialogButton = 2131034112;
+			// aapt resource value: 0x7f050002
+			public const int friendsDialogButton = 2131034114;
 			
 			// aapt resource value: 0x7f05000f
 			public const int friendsListView = 2131034127;
 			
-			// aapt resource value: 0x7f050002
-			public const int messageEditText = 2131034114;
+			// aapt resource value: 0x7f050004
+			public const int messageEditText = 2131034116;
+			
+			// aapt resource value: 0x7f050012
+			public const int myMessageIsReadTextView = 2131034130;
 			
 			// aapt resource value: 0x7f050011
 			public const int myMessageTextView = 2131034129;
@@ -117,17 +120,17 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f050010
 			public const int myMessageTimeTextView = 2131034128;
 			
-			// aapt resource value: 0x7f05000a
-			public const int newMassageTextView = 2131034122;
-			
 			// aapt resource value: 0x7f050009
-			public const int onlineImageView = 2131034121;
+			public const int newMessageTextView = 2131034121;
+			
+			// aapt resource value: 0x7f05000a
+			public const int onlineImageView = 2131034122;
 			
 			// aapt resource value: 0x7f05000e
 			public const int searchEditText = 2131034126;
 			
-			// aapt resource value: 0x7f050012
-			public const int webView = 2131034130;
+			// aapt resource value: 0x7f050013
+			public const int webView = 2131034131;
 			
 			static Id()
 			{

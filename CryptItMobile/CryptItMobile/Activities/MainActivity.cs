@@ -1,9 +1,13 @@
-﻿using Android.App;
+﻿using System.Text;
+using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Widget;
 using CryptItMobile.Adapters;
+using Java.IO;
+using vkAPI;
+using CryptingTool;
 
 namespace CryptItMobile.Activities
 {
@@ -19,10 +23,24 @@ namespace CryptItMobile.Activities
             base.OnCreate(bundle);
 
             SetContentView(Resource.Layout.Main);
-            
+
+            var fileWorker = new FileWorker();
+            if (!fileWorker.FillKeys())
+            {
+                CryptTool.Instance.CreateRSAKey();
+                fileWorker.SavePrivateAndPublicKey();
+            }
+            fileWorker.AddFriendKeys();
+
             _friendsListView = FindViewById<ListView>(Resource.Id.friendsListView);
             _friendsAdapter = new FriendsAdapter(this);
             _friendsListView.Adapter = _friendsAdapter;
+
+            LongPollServerService.Instance.ConnectToLongPollServer();
+
+            LongPollServerService.Instance.GotNewMessageEvent += _friendsAdapter.NewMessage;
+            LongPollServerService.Instance.InMessageStateChangedToReadEvent += _friendsAdapter.MessageStateChangedToRead;
+            LongPollServerService.Instance.UserBecameOnlineOrOfflineEvent += _friendsAdapter.UserBecameOnlineOrOffline;
 
             _searchEditText = FindViewById<EditText>(Resource.Id.searchEditText);
 
@@ -33,8 +51,9 @@ namespace CryptItMobile.Activities
 
             _friendsListView.ItemClick += (sender, e) =>
             {
+                _friendsAdapter.SetFriendKey(e.Position);
                 var intent = new Intent(this, typeof(DialogActivity));
-                intent.PutExtra("FriendId", _friendsAdapter._friends[e.Position].Id);//todo переделать когда перенесу друзей в активити
+                intent.PutExtra("FriendId", _friendsAdapter.GetItemId(e.Position));
                 StartActivity(intent);
             };
 
