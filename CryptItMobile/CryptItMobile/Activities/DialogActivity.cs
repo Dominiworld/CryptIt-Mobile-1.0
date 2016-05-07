@@ -46,8 +46,7 @@ namespace CryptItMobile.Activities
             _dialogListView.Adapter = _dialogAdapter;
 
             _sendButton = FindViewById<Button>(Resource.Id.enterButton);
-            string text = "Добавьте публичный ключ пользователя в папку CryptIt Keys";
-            Toast toast= Toast.MakeText(this, text, ToastLength.Long);
+            Toast toast= Toast.MakeText(this, Resource.String.NoPublicKey, ToastLength.Long);
             if (CryptingTool.CryptTool.Instance.keyRSARemote == null)
             {
                 _sendButton.Enabled = false;
