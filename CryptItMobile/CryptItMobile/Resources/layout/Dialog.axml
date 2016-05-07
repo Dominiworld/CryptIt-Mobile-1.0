@@ -79,5 +79,6 @@
         android:background="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stackFromBottom="true"
         android:id="@+id/dialogListView" />
 </LinearLayout>
