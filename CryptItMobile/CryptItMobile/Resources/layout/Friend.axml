@@ -20,6 +20,14 @@
         android:layout_width="300dp"
         android:layout_toRightOf="@+id/friendImageView"
         android:id="@+id/friendTextView" />
+    <TextView
+        android:paddingRight="5dp"
+        android:textSize="15sp"
+        android:textColor="#ffffff"
+        android:layout_height="40dp"
+        android:layout_width="40dp"
+        android:layout_toRightOf="@+id/friendTextView"
+        android:id="@+id/newMessageTextView" />
     <ImageView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
