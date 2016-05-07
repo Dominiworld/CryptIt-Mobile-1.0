@@ -12,8 +12,12 @@ namespace CryptingTool
         public byte[] keyRSAPrivate;
         public byte[] keyRSARemote;
 
+        private byte[] senderPubKeyBlob;
+
         public string _isCryptedFlag = "ъйьz";
         private string _mobileFlag = "h1m1";
+        private string _desktopFlag = "h2m2";
+
 
 
         public static CryptTool Instance = new CryptTool();
@@ -30,6 +34,7 @@ namespace CryptingTool
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(2048);
             keyRSAPrivate = rsa.ExportCspBlob(true);
             keyRSAPublic = rsa.ExportCspBlob(false);
+            keyRSARemote = keyRSAPublic;
         }
 
         public string SendRSAKey(byte[] keyRSA)
@@ -37,7 +42,7 @@ namespace CryptingTool
             return Encoding.Default.GetString(keyRSA);
         }
 
-        public void SetRSAKey(string RSAKey)//todo вызвать
+        public void SetRSAKey(string RSAKey)
         {
             keyRSARemote = Encoding.Default.GetBytes(RSAKey);
         }
@@ -192,19 +197,38 @@ namespace CryptingTool
 
             if (des != _isCryptedFlag)
                 return message;
+            string des2 = message.Substring(_isCryptedFlag.Length, _mobileFlag.Length);
 
-            message = message.Substring(_isCryptedFlag.Length + _mobileFlag.Length);
-            message = message.FromBase64();
+            var enc = Encoding.GetEncoding(1252);
 
-            string encryptedSymmetricKey = message.Substring(0, 344);
-            byte[] receivedData = Encoding.Default.GetBytes(message.Substring(344));
-
-            string symmetricKey = DecryptString(encryptedSymmetricKey);
-            if (symmetricKey == encryptedSymmetricKey)
+            if (des2 == _mobileFlag)
             {
-                return message;
+                message = message.Substring(_desktopFlag.Length + _isCryptedFlag.Length).FromBase64();
+
+                string encryptedSymmetricKey = message.Substring(0, 344);
+                byte[] receivedData = enc.GetBytes(message.Substring(344));
+                string symmetricKey = DecryptString(encryptedSymmetricKey);
+                if (symmetricKey == encryptedSymmetricKey)
+                {
+                    return message;
+                }
+                return Decrypt(receivedData, symmetricKey);
             }
-            return Decrypt(receivedData, symmetricKey);
+
+            if (des2 == _desktopFlag)
+            {
+                message = message.Substring(_desktopFlag.Length + _isCryptedFlag.Length).FromBase64();
+                string encryptedSymmetricKey = message.Substring(136, 344);
+                byte[] receivedData = enc.GetBytes(message.Substring(480));
+                string symmetricKey = DecryptString(encryptedSymmetricKey);
+                if (symmetricKey == encryptedSymmetricKey)
+                {
+                    return message;
+                }
+                return Decrypt(receivedData, symmetricKey);
+            }
+
+            return message;
         }
         /// <summary>
         /// Шифровка сообщения
@@ -214,10 +238,12 @@ namespace CryptingTool
         /// </returns>
         public string MakingEnvelope(string message)
         {
+
+            var enc = Encoding.GetEncoding(1252);
             string symmetricKey = GetRandomString(8);
             string encryptedSymmetricKey = EncryptString(symmetricKey);
             byte[] senderData = Encrypt(Encoding.UTF8.GetBytes(message), symmetricKey);
-            var envelope = encryptedSymmetricKey + Encoding.Default.GetString(senderData);
+            var envelope = encryptedSymmetricKey + enc.GetString(senderData);
             return _isCryptedFlag + _mobileFlag + envelope.ToBase64();
         }
 
