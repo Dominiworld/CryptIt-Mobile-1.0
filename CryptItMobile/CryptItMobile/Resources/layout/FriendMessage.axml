@@ -7,8 +7,8 @@
         android:paddingLeft="5dp"
         android:layout_marginRight="120dp"
         android:layout_marginTop="6dp"
-        android:background="#FFFFFF"
-        android:textColor="#5B7FA6"
+        android:background="@color/backgroundMessage"
+        android:textColor="@color/textMessageTime"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/friendMessageTimeTextView" />
@@ -17,8 +17,8 @@
         android:layout_marginRight="120dp"
         android:layout_marginBottom="6dp"
         android:textSize="16sp"
-        android:background="#FFFFFF"
-        android:textColor="#2B587A"
+        android:background="@color/backgroundMessage"
+        android:textColor="@color/textMessage"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/friendMessageTextView" />

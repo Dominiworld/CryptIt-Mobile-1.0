@@ -9,7 +9,7 @@
         android:layout_marginLeft="120dp"
         android:layout_marginTop="6dp"
         android:background="@drawable/rectangle_rounded_top"
-        android:textColor="#5B7FA6"
+        android:textColor="@color/textMessageTime"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/myMessageTimeTextView" />
@@ -20,7 +20,7 @@
         android:layout_marginBottom="6dp"
         android:textSize="16sp"
         android:background="@drawable/rectangle_rounded_bottom"
-        android:textColor="#2B587A"
+        android:textColor="@color/textMessage"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/myMessageTextView" />

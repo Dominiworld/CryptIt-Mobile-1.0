@@ -15,34 +15,29 @@
         android:paddingLeft="5dp"
         android:paddingTop="10dp"
         android:textSize="20sp"
-        android:textColor="#2B587A"
+        android:textColor="@color/textFriend"
         android:layout_height="40dp"
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_toRightOf="@+id/friendImageView"
         android:id="@+id/friendTextView" />
     <TextView
         android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:background="@drawable/oval"
         android:textSize="15sp"
-        android:textColor="#ffffff"
-        android:layout_height="40dp"
-        android:layout_width="40dp"
-        android:layout_toRightOf="@+id/friendTextView"
+        android:textColor="@color/textButton"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:gravity="bottom|right"
+        android:layout_toLeftOf="@+id/onlineImageView"
         android:id="@+id/newMessageTextView" />
     <ImageView
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginTop="2dp"
-        android:gravity="bottom"
+        android:layout_width="30dp"
+        android:layout_marginTop="13dp"
+        android:gravity="right"
         android:layout_toLeftOf="@+id/friendTextView"
         android:src="@drawable/online"
         android:visibility="invisible"
         android:id="@+id/onlineImageView" />
-    <TextView
-        android:paddingRight="5dp"
-        android:textSize="15sp"
-        android:textColor="#ffffff"
-        android:layout_height="10dp"
-        android:layout_width="10dp"
-        android:layout_toRightOf="@+id/friendTextView"
-        android:id="@+id/newMassageTextView" />
 </LinearLayout>

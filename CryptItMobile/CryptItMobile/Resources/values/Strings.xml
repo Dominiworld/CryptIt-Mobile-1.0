@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="ApplicationName">CryptItMobile</string>
+    <string name="Friends">Друзья</string>
+    <string name="Exit">Выход</string>
+    <string name="Send">Отправить</string>
+    <string name="InputName">Введите имя друга...</string>
+    <string name="InputMessage">Введите сообщение...</string>
     <string name="NoPublicKey">Добавьте публичный ключ пользователя в папку CryptIt Keys</string>
 </resources>

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<resources> 
+<color name="head">#2e72a3</color> 
+<color name="silver">#CECECE</color>   
+<color name="endButton">#3690d3</color>
+<color name="listViewFriend">#cee2f2</color>
+<color name="myMessage">#cee2f2</color>
+<color name="backgroundMessage">#ffffff</color>
+<color name="textButton">#ffffff</color>
+<color name="textFriend">#2B587A</color>
+<color name="textMessage">#2B587A</color>
+<color name="textHint">#5B7FA6</color>
+<color name="textMessageTime">#5B7FA6</color>
+</resources>
