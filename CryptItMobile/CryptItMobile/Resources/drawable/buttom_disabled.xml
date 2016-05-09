@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<selector
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+          <shape>
+            <gradient 
+            android:startColor="@color/silver" 
+            android:centerColor="@color/myMessage" 
+            android:endColor="@color/silver" 
+            /> 
+             <corners android:bottomRightRadius="7dp"
+                 android:bottomLeftRadius="7dip"
+                 android:topLeftRadius="7dip"
+                 android:topRightRadius="7dp"/>
+         
+        </shape>
+    </item>
+</selector>

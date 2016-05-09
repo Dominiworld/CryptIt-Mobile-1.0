@@ -16,19 +16,21 @@
             android:paddingRight="5dp"
             android:textColor="@color/textButton"
             android:layout_alignParentLeft="true"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:text="@string/Friends"
             android:layout_width="wrap_content"
             android:id="@+id/friendsDialogButton"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:paddingTop="5dp" />
         <Button
             android:background="@drawable/rectangle_rounded_all"
             android:gravity="top|center_horizontal"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
+            android:paddingTop="5dp"
             android:textColor="@color/textButton"
             android:layout_alignParentRight="true"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_width="wrap_content"
             android:text="@string/Exit"
             android:id="@+id/exitDialogButton"
@@ -65,7 +67,7 @@
         android:layout_weight="4"
         android:background="@color/myMessage"
         android:textColor="@color/textHint"
-        android:layout_height="60dp"
+        android:layout_height="90dp"
         android:hint="@string/InputMessage"
         android:paddingLeft="5dp"
         android:layout_width="match_parent"
@@ -77,16 +79,17 @@
         android:orientation="horizontal">
         <Button
             android:layout_weight="3"
-            android:background="@drawable/button"
+            android:background="@drawable/buttom"
             android:gravity="top|center_horizontal"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textColor="@color/textButton"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_width="match_parent"
             android:layout_marginLeft="5dp"
             android:text="@string/Send"
             android:id="@+id/enterButton"
+            android:paddingTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp" />
     </RelativeLayout>
