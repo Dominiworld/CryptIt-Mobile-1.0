@@ -13,12 +13,12 @@ using vkAPI;
 
 namespace CryptItMobile.Adapters
 {
-    public class FriendsAdapter: BaseAdapter//todo Оптимизировать загрузку картинок
+    public class FriendsAdapter: BaseAdapter//todo ГЋГЇГІГЁГ¬ГЁГ§ГЁГ°Г®ГўГ ГІГј Г§Г ГЈГ°ГіГ§ГЄГі ГЄГ Г°ГІГЁГ­Г®ГЄ
     {
         private LayoutInflater lInflater;
         private UserService _userService = new UserService();
-        private List<AndroidUser> _friends;//Друзья отображаемые при поиске
-        private List<AndroidUser> _allFriends;//список всех друзей, чтобы не грузить по несколько раз
+        private List<AndroidUser> _friends;//Г„Г°ГіГ§ГјГї Г®ГІГ®ГЎГ°Г Г¦Г ГҐГ¬Г»ГҐ ГЇГ°ГЁ ГЇГ®ГЁГ±ГЄГҐ
+        private List<AndroidUser> _allFriends;//Г±ГЇГЁГ±Г®ГЄ ГўГ±ГҐГµ Г¤Г°ГіГ§ГҐГ©, Г·ГІГ®ГЎГ» Г­ГҐ ГЈГ°ГіГ§ГЁГІГј ГЇГ® Г­ГҐГ±ГЄГ®Г«ГјГЄГ® Г°Г Г§
         private FileWorker _fileWorker=new FileWorker();
 
         public FriendsAdapter(Context context)
@@ -59,12 +59,18 @@ namespace CryptItMobile.Adapters
                 view.FindViewById<ImageView>(Resource.Id.onlineImageView).Visibility = ViewStates.Invisible;
             }
 
-            view.FindViewById<TextView>(Resource.Id.newMessageTextView).Text =
+            var numberOfNewMessagesText = view.FindViewById<TextView>(Resource.Id.newMessageTextView);
+            numberOfNewMessagesText.Text =
                 _friends[position].User.NumberOfNewMessages.ToString();
+
+            if (_friends[position].User.NumberOfNewMessages==0)
+            {
+                numberOfNewMessagesText.Visibility = ViewStates.Invisible;
+            }
             return view;
         }
         /// <summary>
-        /// Возвращает id друга
+        /// Г‚Г®Г§ГўГ°Г Г№Г ГҐГІ id Г¤Г°ГіГЈГ 
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
@@ -115,10 +121,10 @@ namespace CryptItMobile.Adapters
                     : _allFriends.Where(f => f.User.FullName.ToLower().Contains(searchString.ToLower())).ToList();
                 NotifyDataSetChanged();
             }
-            //else Вставить чего для торопыг, которые ищут, когда друзей еще не подгрузили
+            //else Г‚Г±ГІГ ГўГЁГІГј Г·ГҐГЈГ® Г¤Г«Гї ГІГ®Г°Г®ГЇГ»ГЈ, ГЄГ®ГІГ®Г°Г»ГҐ ГЁГ№ГіГІ, ГЄГ®ГЈГ¤Г  Г¤Г°ГіГ§ГҐГ© ГҐГ№ГҐ Г­ГҐ ГЇГ®Г¤ГЈГ°ГіГ§ГЁГ«ГЁ
         }
 
-        private async void GetImageBitmapFromUrl() //todo Перенести в отдельный класс, сделать async
+        private async void GetImageBitmapFromUrl() //todo ГЏГҐГ°ГҐГ­ГҐГ±ГІГЁ Гў Г®ГІГ¤ГҐГ«ГјГ­Г»Г© ГЄГ«Г Г±Г±, Г±Г¤ГҐГ«Г ГІГј async
         {
             await GetFriends();
             Bitmap imageBitmap = null;
@@ -150,15 +156,15 @@ namespace CryptItMobile.Adapters
             
         }
 
-        public void MessageStateChangedToRead(int lastReadId, int peerId)//todo сильно подумать
+        public void MessageStateChangedToRead(int lastReadId, int peerId)//todo Г±ГЁГ«ГјГ­Г® ГЇГ®Г¤ГіГ¬Г ГІГј
         {
             var friend = _friends.FirstOrDefault(fr => fr.User.Id == peerId);
             if (friend != null) friend.User.NumberOfNewMessages=0;
             NotifyDataSetChanged();
         }
 
-        public void UserBecameOnlineOrOffline(int userId, bool online) //online = 1, если стал онлайн
-            //=0, если стал оффлайн
+        public void UserBecameOnlineOrOffline(int userId, bool online) //online = 1, ГҐГ±Г«ГЁ Г±ГІГ Г« Г®Г­Г«Г Г©Г­
+            //=0, ГҐГ±Г«ГЁ Г±ГІГ Г« Г®ГґГґГ«Г Г©Г­
         {
             var friend = _friends.FirstOrDefault(fr => fr.User.Id == userId);
             if (friend != null)
