@@ -13,12 +13,12 @@ using vkAPI;
 
 namespace CryptItMobile.Adapters
 {
-    public class FriendsAdapter: BaseAdapter//todo Îïòèìèçèðîâàòü çàãðóçêó êàðòèíîê
+    public class FriendsAdapter: BaseAdapter
     {
         private LayoutInflater lInflater;
         private UserService _userService = new UserService();
-        private List<AndroidUser> _friends;//Äðóçüÿ îòîáðàæàåìûå ïðè ïîèñêå
-        private List<AndroidUser> _allFriends;//ñïèñîê âñåõ äðóçåé, ÷òîáû íå ãðóçèòü ïî íåñêîëüêî ðàç
+        private List<AndroidUser> _friends;//Друзья отображаемые при поиске
+        private List<AndroidUser> _allFriends;//список всех друзей, чтобы не грузить по несколько раз
         private FileWorker _fileWorker=new FileWorker();
 
         public FriendsAdapter(Context context)
@@ -27,7 +27,6 @@ namespace CryptItMobile.Adapters
             lInflater = (LayoutInflater)context.GetSystemService(Context.LayoutInflaterService);
         }
 
-       
         public override long GetItemId(int position)
         {
             return _friends[position].User.Id;
@@ -69,11 +68,7 @@ namespace CryptItMobile.Adapters
             }
             return view;
         }
-        /// <summary>
-        /// Âîçâðàùàåò id äðóãà
-        /// </summary>
-        /// <param name="position"></param>
-        /// <returns></returns>
+
         public override Java.Lang.Object GetItem(int position)
         {
             return null;
@@ -121,7 +116,7 @@ namespace CryptItMobile.Adapters
                     : _allFriends.Where(f => f.User.FullName.ToLower().Contains(searchString.ToLower())).ToList();
                 NotifyDataSetChanged();
             }
-            //else Âñòàâèòü ÷åãî äëÿ òîðîïûã, êîòîðûå èùóò, êîãäà äðóçåé åùå íå ïîäãðóçèëè
+            //else Вставить чего для торопыг, которые ищут, когда друзей еще не подгрузили
         }
 
         private async void GetImageBitmapFromUrl() //todo Ïåðåíåñòè â îòäåëüíûé êëàññ, ñäåëàòü async
@@ -163,8 +158,8 @@ namespace CryptItMobile.Adapters
             NotifyDataSetChanged();
         }
 
-        public void UserBecameOnlineOrOffline(int userId, bool online) //online = 1, åñëè ñòàë îíëàéí
-            //=0, åñëè ñòàë îôôëàéí
+        public void UserBecameOnlineOrOffline(int userId, bool online) //online = 1, если стал онлайн
+                                                                       //=0, если стал оффлайн
         {
             var friend = _friends.FirstOrDefault(fr => fr.User.Id == userId);
             if (friend != null)

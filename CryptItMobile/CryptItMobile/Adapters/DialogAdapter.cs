@@ -80,27 +80,11 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             NotifyDataSetChanged();
         }
 
-        public void NewMessage(Message message) //todo на рефакторинг 
+        public void NewMessage(Message message)
         {
-            //Был баг с полученем своих сообщений из другого одноврменно открытого клиента ВК 
-            //(Я в браузере пишу сообщение собеседнику 1, в приложении я в диалоге с собеседником 2. 
-            //Получаю в приложении свои сообщения, адресованные собеседнику 1 в диалоге с собеседником 2)
-            if (message.UserId==_friendId||message.UserId==AuthorizeService.Instance.CurrentUserId)
-            {
-                if (!message.Out)
-                {
-                    message.IsNotRead = false;
-                    List<int> messageList = new List<int> {message.Id};
-                    _messageService.MarkMessagesAsRead(messageList, message.UserId);
-                    message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
-                }
-                else
-                {
-                    message.IsNotRead = true;
-                }
-                _messages.Insert(0, message);
-                NotifyDataSetChanged();
-            }          
+            _messages.Insert(0, message);
+            NotifyDataSetChanged();
+
         }
 
         public void MessageStateChangedToRead(int lastReadId, int peerId)//todo сильно подумать
