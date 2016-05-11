@@ -2,6 +2,7 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Views;
 using Android.Webkit;
 using Java.Net;
 using vkAPI;
@@ -18,6 +19,7 @@ namespace CryptItMobile.Activities
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            RequestWindowFeature(WindowFeatures.NoTitle);
 
             // Create your application here
             SetContentView(Resource.Layout.Start);
