@@ -148,9 +148,11 @@ namespace CryptItMobile.Adapters
             GetDialogsInfo();
         }
 
-        public void NewMessage(Message message) 
+        public void NewMessage(Message message)
         {
-            var friend = _friends.FirstOrDefault(fr => fr.User.Id == message.UserId&&!message.Out);
+            if (message.ChatId != 0)
+                return;
+            var friend = _friends.FirstOrDefault(fr => fr.User.Id == message.UserId && !message.Out);
             if (friend != null)
             {
                 friend.User.NumberOfNewMessages++;
@@ -199,6 +201,8 @@ namespace CryptItMobile.Adapters
                 var unreadDialogs = await _messageService.GetDialogs(true);
                 foreach (var dialog in unreadDialogs)
                 {
+                    if (dialog.Message.ChatId != 0)
+                        continue;
                     var friend = _allFriends.FirstOrDefault(f => f.User.Id == dialog.Message.UserId);
                     if (friend != null)
                     {
