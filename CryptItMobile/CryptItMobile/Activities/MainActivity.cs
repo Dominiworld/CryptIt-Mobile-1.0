@@ -3,6 +3,7 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Views;
 using Android.Widget;
 using CryptItMobile.Adapters;
 using Java.IO;
@@ -11,7 +12,7 @@ using CryptingTool;
 
 namespace CryptItMobile.Activities
 {
-    [Activity(Label = "CryptItMobile", ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+    [Activity(Label = "CryptItMobile", Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class MainActivity : Activity
     {
         private ListView _friendsListView;
@@ -58,16 +59,33 @@ namespace CryptItMobile.Activities
             };
 
 
-            FindViewById<Button>(Resource.Id.exitMainButton).Click += (sender, e) =>
+            //FindViewById<Button>(Resource.Id.exitMainButton).Click += (sender, e) =>
+            //{
+            //    var intent = new Intent(this, typeof(StartActivity));
+            //    intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
+            //    StartActivity(intent);
+            //};
+            
+        }
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Layout.mainMenu, menu);
+            return true;
+        }
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            if (item.ItemId == Resource.Id.exitMainButton)
             {
                 var intent = new Intent(this, typeof(StartActivity));
                 intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
                 StartActivity(intent);
-            };
-            
+            }
+            return base.OnOptionsItemSelected(item);
         }
 
-        
+
     }
 }
 

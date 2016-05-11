@@ -11,12 +11,15 @@ using vkAPI;
 using Message = Model.Message;
 using System.Net;
 using Android.Graphics;
+using Android.Graphics.Drawables;
+using Android.Util;
+using Android.Views;
 using CryptItMobile.Activities;
 using Model;
 
 namespace CryptItMobile.Activities
 {
-    [Activity(Label = "DialogActivity", ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+    [Activity(Icon = "@drawable/icon", ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class DialogActivity : Activity
     {
 
@@ -29,12 +32,18 @@ namespace CryptItMobile.Activities
         private User _friend;
         private int _friendId;
         private string _myMessage=null;
+        private IMenu _menu;
+        private Toast toast;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
             SetContentView(Resource.Layout.Dialog);
             // Create your application here
+
+            ActionBar.SetDisplayHomeAsUpEnabled(true);
+            ActionBar.SetDisplayShowTitleEnabled(false);
 
             _friendId = (int) Intent.GetLongExtra("FriendId", 0);
             GetFriend(_friendId);
@@ -48,11 +57,10 @@ namespace CryptItMobile.Activities
             _dialogListView.Adapter = _dialogAdapter;
 
             _sendButton = FindViewById<Button>(Resource.Id.enterButton);
-            Toast toast = Toast.MakeText(this, Resource.String.NoPublicKey, ToastLength.Long);
+            toast = Toast.MakeText(this, Resource.String.NoPublicKey, ToastLength.Long);
             if (CryptingTool.CryptTool.Instance.keyRSARemote == null)
             {
                 _sendButton.Enabled = false;
-
                 toast.Show();
             }
 
@@ -81,26 +89,46 @@ namespace CryptItMobile.Activities
                 }
             };
 
-            FindViewById<Button>(Resource.Id.exitDialogButton).Click += (sender, e) =>
-            {
-                toast.Cancel();
-                var intent = new Intent(this, typeof(StartActivity));
-                LongPollServerService.Instance.GotNewMessageEvent -= NewMessage;
-                intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
-                StartActivity(intent);
-            };
+            //FindViewById<Button>(Resource.Id.exitDialogButton).Click += (sender, e) =>
+            //{
+            //    toast.Cancel();
+            //    var intent = new Intent(this, typeof(StartActivity));
+            //    LongPollServerService.Instance.GotNewMessageEvent -= NewMessage;
+            //    intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
+            //    StartActivity(intent);
+            //};
 
-            FindViewById<Button>(Resource.Id.friendsDialogButton).Click +=
-                (sender, e) => //todo Попробовать переделать с помощью ActionBar.SetDisplayHomeAsUpEnabled(true);
-                {
-                    toast.Cancel();
-                    var intent = new Intent(this, typeof(MainActivity));
-                    LongPollServerService.Instance.GotNewMessageEvent -= NewMessage;
-                    intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
-                    StartActivity(intent);
-                };
+            //FindViewById<Button>(Resource.Id.friendsDialogButton).Click +=
+            //    (sender, e) => //todo Попробовать переделать с помощью ActionBar.SetDisplayHomeAsUpEnabled(true);
+            //    {
+            //        toast.Cancel();
+            //        var intent = new Intent(this, typeof(MainActivity));
+            //        LongPollServerService.Instance.GotNewMessageEvent -= NewMessage;
+            //        intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
+            //        StartActivity(intent);
+            //    };
         }
 
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
+        {
+            MenuInflater.Inflate(Resource.Layout.mainMenu, menu);
+            _menu = menu;
+            return true;
+        }
+
+
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            toast.Cancel();
+            var intent = item.ItemId == Resource.Id.exitMainButton ?
+                new Intent(this, typeof (StartActivity)) :
+                new Intent(this, typeof(MainActivity));
+            LongPollServerService.Instance.GotNewMessageEvent -= NewMessage;
+            intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
+            StartActivity(intent);
+            return base.OnOptionsItemSelected(item);
+        }
 
         private async void SendMessage(int friendId)
         {
@@ -135,7 +163,6 @@ namespace CryptItMobile.Activities
                 {
                     imageBitmap = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
                     FindViewById<ImageView>(Resource.Id.dialogFriendImageView).SetImageBitmap(imageBitmap);
-
                 }
             }
         }

@@ -82,6 +82,9 @@
     <AndroidResource Include="Resources\drawable\rectangle_rounded_bottom.axml" />
     <AndroidResource Include="Resources\drawable\rectangle_rounded_top.axml" />
     <AndroidResource Include="Resources\drawable\Thumbs.db" />
+    <AndroidResource Include="Resources\layout\mainMenu.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />
