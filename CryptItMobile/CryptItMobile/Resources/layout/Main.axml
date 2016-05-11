@@ -31,6 +31,10 @@
         android:layout_height="35dp"
         android:layout_width="match_parent"
         android:id="@+id/searchEditText" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/textHint" />
     <ListView
         android:background="@color/listViewFriend"
         android:layout_width="match_parent"

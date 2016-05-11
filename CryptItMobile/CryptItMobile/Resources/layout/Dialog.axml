@@ -39,7 +39,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/myMessage">
         <ImageView
             android:layout_height="50dp"
             android:layout_width="50dp"
@@ -47,6 +48,7 @@
             android:layout_marginLeft="5dp"
             android:id="@+id/dialogFriendImageView" />
         <TextView
+            android:background="@color/myMessage"
             android:gravity="left"
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
@@ -56,6 +58,10 @@
             android:layout_width="300dp"
             android:id="@+id/dialogFriendTextView" />
     </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/textHint" />
     <ListView
         android:background="@color/backgroundMessage"
         android:layout_width="match_parent"
@@ -63,6 +69,10 @@
         android:layout_weight="26"
         android:stackFromBottom="true"
         android:id="@+id/dialogListView" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/textHint" />
     <EditText
         android:layout_weight="4"
         android:background="@color/myMessage"
@@ -72,6 +82,10 @@
         android:paddingLeft="5dp"
         android:layout_width="match_parent"
         android:id="@+id/messageEditText" />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/textHint" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -93,4 +107,8 @@
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp" />
     </RelativeLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@color/textHint" />
 </LinearLayout>
