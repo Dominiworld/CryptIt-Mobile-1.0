@@ -20,6 +20,7 @@ namespace CryptItMobile.Adapters
         private List<AndroidUser> _friends;//Друзья отображаемые при поиске
         private List<AndroidUser> _allFriends;//список всех друзей, чтобы не грузить по несколько раз
         private FileWorker _fileWorker=new FileWorker();
+        private MessageService _messageService = new MessageService();
 
         public FriendsAdapter(Context context)
         {
@@ -100,9 +101,16 @@ namespace CryptItMobile.Adapters
                     Avatar = null,
                     User = friend
                 });
+
             }
 
-            _allFriends=_allFriends.OrderBy(f => f.User.LastName).ToList();
+            _allFriends.Add(new AndroidUser
+            {
+                Avatar = null,
+                User = AuthorizeService.Instance.CurrentUser
+            });
+
+            _allFriends =_allFriends.OrderBy(f => f.User.LastName).ToList();
             _friends = _allFriends.OrderBy(f => f.User.LastName).ToList();
             NotifyDataSetChanged();
         }
@@ -137,6 +145,7 @@ namespace CryptItMobile.Adapters
                     }
                 }    
             }
+            GetDialogsInfo();
         }
 
         public void NewMessage(Message message) 
@@ -145,16 +154,22 @@ namespace CryptItMobile.Adapters
             if (friend != null)
             {
                 friend.User.NumberOfNewMessages++;
+                _friends.Remove(friend);
+                _friends.Insert(0, friend);
                 NotifyDataSetChanged();
             }
-
-            
         }
 
         public void MessageStateChangedToRead(int lastReadId, int peerId)//todo ñèëüíî ïîäóìàòü
         {
             var friend = _friends.FirstOrDefault(fr => fr.User.Id == peerId);
-            if (friend != null) friend.User.NumberOfNewMessages=0;
+            if (friend != null)
+            {
+                friend.User.NumberOfNewMessages = 0;
+                var readDialogs = _friends.Where(f => f.User.NumberOfNewMessages == 0).OrderBy(f => f.User.LastName);
+                _friends = _allFriends.Where(f => f.User.NumberOfNewMessages > 0).ToList();
+                _friends.AddRange(readDialogs);
+            }
             NotifyDataSetChanged();
         }
 
@@ -175,6 +190,32 @@ namespace CryptItMobile.Adapters
                 NotifyDataSetChanged();
             }
             
+        }
+
+        private async void GetDialogsInfo()
+        {
+            try
+            {
+                var unreadDialogs = await _messageService.GetDialogs(true);
+                foreach (var dialog in unreadDialogs)
+                {
+                    var friend = _allFriends.FirstOrDefault(f => f.User.Id == dialog.Message.UserId);
+                    if (friend != null)
+                    {
+                        friend.User.NumberOfNewMessages = dialog.UnreadMessagesAmount;
+                    }
+                }
+                var newDialogFriends = _friends.Where(f => f.User.NumberOfNewMessages > 0).ToList();
+                _friends = _friends.Where(f => f.User.NumberOfNewMessages == 0).ToList();
+                _friends.InsertRange(0, newDialogFriends);
+                NotifyDataSetChanged();
+
+            }
+            catch (WebException)
+            {
+
+            }
+
         }
     }
 }
