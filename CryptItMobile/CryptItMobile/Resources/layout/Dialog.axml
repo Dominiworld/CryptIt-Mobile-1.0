@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@color/myMessage">
+        android:background="@drawable/rectangle_rounded_all">
         <ImageView
             android:layout_height="50dp"
             android:layout_width="50dp"
@@ -16,12 +16,12 @@
             android:layout_marginLeft="5dp"
             android:id="@+id/dialogFriendImageView" />
         <TextView
-            android:background="@color/myMessage"
+            android:background="@drawable/rectangle_rounded_all"
             android:gravity="left"
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:textSize="20sp"
-            android:textColor="@color/textMessage"
+            android:textColor="@color/textButton"
             android:layout_height="40dp"
             android:layout_width="300dp"
             android:id="@+id/dialogFriendTextView" />
@@ -61,18 +61,16 @@
         android:orientation="horizontal">
         <Button
             android:layout_weight="3"
-            android:background="@drawable/buttom"
+            android:background="@drawable/button"
             android:gravity="top|center_horizontal"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textColor="@color/textButton"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_width="match_parent"
-            android:layout_marginLeft="5dp"
             android:text="@string/Send"
             android:id="@+id/enterButton"
-            android:paddingTop="5dp"
-            android:layout_marginRight="5dp"
+            android:paddingTop="8dp"
             android:layout_marginBottom="5dp" />
     </RelativeLayout>
     <View

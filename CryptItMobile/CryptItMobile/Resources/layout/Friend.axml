@@ -34,7 +34,7 @@
     <ImageView
         android:layout_height="wrap_content"
         android:layout_width="30dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="10dp"
         android:gravity="right"
         android:layout_toLeftOf="@+id/friendTextView"
         android:src="@drawable/online"
