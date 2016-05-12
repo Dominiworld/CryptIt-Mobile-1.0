@@ -29,8 +29,8 @@
     <com.felipecsl.gifimageview.library.GifImageView
         android:id="@+id/dialogLoaderImageView"
         android:layout_gravity="center"
-        android:scaleType="fitCenter"
-        android:layout_width="match_parent"
+        android:scaleType="centerInside"
+        android:layout_width="100dp"
         android:layout_height="match_parent" />
     <View
         android:layout_width="fill_parent"

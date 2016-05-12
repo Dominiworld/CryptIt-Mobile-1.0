@@ -7,8 +7,8 @@
     <com.felipecsl.gifimageview.library.GifImageView
         android:id="@+id/mainLoaderImageView"
         android:layout_gravity="center"
-        android:scaleType="fitCenter"
-        android:layout_width="match_parent"
+        android:scaleType="centerInside"
+        android:layout_width="100dp"
         android:layout_height="match_parent" />
     <EditText
         android:paddingLeft="5dp"
@@ -21,7 +21,8 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="@color/textHint" />
+        android:background="@color/textHint"
+        android:id="@+id/divider" />
     <ListView
         android:background="@color/listViewFriend"
         android:layout_width="match_parent"

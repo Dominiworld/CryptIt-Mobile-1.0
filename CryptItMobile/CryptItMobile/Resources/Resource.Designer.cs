@@ -145,11 +145,14 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f060002
 			public const int dialogLoaderImageView = 2131099650;
 			
+			// aapt resource value: 0x7f06000e
+			public const int divider = 2131099662;
+			
 			// aapt resource value: 0x7f060005
 			public const int enterButton = 2131099653;
 			
-			// aapt resource value: 0x7f06000f
-			public const int exitMainButton = 2131099663;
+			// aapt resource value: 0x7f060010
+			public const int exitMainButton = 2131099664;
 			
 			// aapt resource value: 0x7f060007
 			public const int friendImageView = 2131099655;
@@ -163,8 +166,8 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f060006
 			public const int friendTextView = 2131099654;
 			
-			// aapt resource value: 0x7f06000e
-			public const int friendsListView = 2131099662;
+			// aapt resource value: 0x7f06000f
+			public const int friendsListView = 2131099663;
 			
 			// aapt resource value: 0x7f06000c
 			public const int mainLoaderImageView = 2131099660;
@@ -172,14 +175,14 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f060004
 			public const int messageEditText = 2131099652;
 			
+			// aapt resource value: 0x7f060013
+			public const int myMessageIsReadTextView = 2131099667;
+			
 			// aapt resource value: 0x7f060012
-			public const int myMessageIsReadTextView = 2131099666;
+			public const int myMessageTextView = 2131099666;
 			
 			// aapt resource value: 0x7f060011
-			public const int myMessageTextView = 2131099665;
-			
-			// aapt resource value: 0x7f060010
-			public const int myMessageTimeTextView = 2131099664;
+			public const int myMessageTimeTextView = 2131099665;
 			
 			// aapt resource value: 0x7f060009
 			public const int newMessageTextView = 2131099657;
@@ -190,8 +193,8 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f06000d
 			public const int searchEditText = 2131099661;
 			
-			// aapt resource value: 0x7f060013
-			public const int webView = 2131099667;
+			// aapt resource value: 0x7f060014
+			public const int webView = 2131099668;
 			
 			static Id()
 			{
