@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IO;
+using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -9,6 +10,7 @@ using CryptItMobile.Adapters;
 using Java.IO;
 using vkAPI;
 using CryptingTool;
+using Felipecsl.GifImageViewLibrary;
 
 namespace CryptItMobile.Activities
 {
@@ -24,10 +26,13 @@ namespace CryptItMobile.Activities
             base.OnCreate(bundle);
 
             SetContentView(Resource.Layout.Main);
-
+            Window.SetSoftInputMode(SoftInput.StateHidden);
             var fileWorker = new FileWorker();
+            StartLoader();
             if (!fileWorker.FillKeys())
             {
+                var toast = Toast.MakeText(this, Resource.String.KeyGeneration, ToastLength.Long);
+                toast.Show();
                 CryptTool.Instance.CreateRSAKey();
                 fileWorker.SavePrivateAndPublicKey();
             }
@@ -58,14 +63,28 @@ namespace CryptItMobile.Activities
                 StartActivity(intent);
             };
 
+        }
 
-            //FindViewById<Button>(Resource.Id.exitMainButton).Click += (sender, e) =>
-            //{
-            //    var intent = new Intent(this, typeof(StartActivity));
-            //    intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
-            //    StartActivity(intent);
-            //};
-            
+        private void StartLoader()
+        {
+            var view = FindViewById<GifImageView>(Resource.Id.mainLoaderImageView);
+
+            var input = Assets.Open("loading.gif");
+            byte[] bytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                input.CopyTo(memoryStream);
+                bytes = memoryStream.ToArray();
+            }
+            view.SetBytes(bytes);
+            view.StartAnimation();
+        }
+
+        public void FinishLoader()
+        {
+            var view = FindViewById<GifImageView>(Resource.Id.mainLoaderImageView);
+            view.StopAnimation();
+            view.Visibility = ViewStates.Gone;
         }
 
         public override bool OnCreateOptionsMenu(IMenu menu)

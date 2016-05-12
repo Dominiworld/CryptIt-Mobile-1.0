@@ -7,4 +7,5 @@
     <string name="InputName">Введите имя друга...</string>
     <string name="InputMessage">Введите сообщение...</string>
     <string name="NoPublicKey">Добавьте публичный ключ пользователя в папку CryptIt Keys</string>
+  <string name="KeyGeneration">Происходит генерация ключей. Пожалуйста подождите</string>
 </resources>

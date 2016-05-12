@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
+using CryptItMobile.Activities;
+using Felipecsl.GifImageViewLibrary;
 using vkAPI;
 using Message = Model.Message;
 
@@ -16,9 +18,11 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
         private LayoutInflater lInflater;
 
         private int _friendId;//todo подумать над этим
+        private Context _ctx;//todo подумать над этим
 
         public DialogAdapter(Context context, int friendId)
         {
+            _ctx = context;
             _friendId = friendId;
             _messages=new List<Message>();
             GetMessages(_friendId);
@@ -112,10 +116,9 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             }
             List<int> messageList = messages.Where(m => !m.Out).Select(m => m.Id).ToList();
             _messageService.MarkMessagesAsRead(messageList, friendId);
+            ((DialogActivity) _ctx).FinishLoader();
             AddMessages(messages);
         }
-
-        
 
     }
 }

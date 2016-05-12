@@ -26,6 +26,12 @@
             android:layout_width="300dp"
             android:id="@+id/dialogFriendTextView" />
     </LinearLayout>
+    <com.felipecsl.gifimageview.library.GifImageView
+        android:id="@+id/dialogLoaderImageView"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"

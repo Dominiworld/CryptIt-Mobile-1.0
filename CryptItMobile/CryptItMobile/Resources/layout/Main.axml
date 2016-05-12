@@ -4,25 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundMessage">
-    <RelativeLayout
+    <com.felipecsl.gifimageview.library.GifImageView
+        android:id="@+id/mainLoaderImageView"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/head"
-        android:orientation="horizontal">
-    <!--<Button
-            android:background="@drawable/rectangle_rounded_all"
-            android:gravity="top|center_horizontal"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:textColor="@color/textButton"
-            android:layout_alignParentRight="true"
-            android:layout_height="40dp"
-            android:layout_width="wrap_content"
-            android:text="@string/Exit"
-            android:id="@+id/exitMainButton"
-            android:layout_marginRight="5dp" />-->
-    </RelativeLayout>
+        android:layout_height="match_parent" />
     <EditText
         android:paddingLeft="5dp"
         android:background="@color/backgroundMessage"

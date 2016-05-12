@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
@@ -15,7 +16,10 @@ using Android.Graphics.Drawables;
 using Android.Util;
 using Android.Views;
 using CryptItMobile.Activities;
+using Felipecsl.GifImageViewLibrary;
+using Java.IO;
 using Model;
+using File = System.IO.File;
 
 namespace CryptItMobile.Activities
 {
@@ -31,8 +35,7 @@ namespace CryptItMobile.Activities
         private UserService _userService = new UserService();
         private User _friend;
         private int _friendId;
-        private string _myMessage=null;
-        private IMenu _menu;
+        private string _myMessage;
         private Toast toast;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -41,16 +44,19 @@ namespace CryptItMobile.Activities
 
             SetContentView(Resource.Layout.Dialog);
             // Create your application here
-
+            Window.SetSoftInputMode(SoftInput.StateHidden);
             ActionBar.SetDisplayHomeAsUpEnabled(true);
             ActionBar.SetDisplayShowTitleEnabled(false);
 
             _friendId = (int) Intent.GetLongExtra("FriendId", 0);
             GetFriend(_friendId);
 
+            StartLoader();
+
             _dialogListView = FindViewById<ListView>(Resource.Id.dialogListView);
             _dialogAdapter = new DialogAdapter(this, _friendId);
 
+            
             LongPollServerService.Instance.GotNewMessageEvent += NewMessage;
             LongPollServerService.Instance.OutMessageStateChangedToReadEvent += _dialogAdapter.MessageStateChangedToRead;
 
@@ -88,13 +94,34 @@ namespace CryptItMobile.Activities
                     isReady = true;
                 }
             };
+
         }
 
+        private void StartLoader()
+        {
+            var view = FindViewById<GifImageView>(Resource.Id.dialogLoaderImageView);
+
+            var input = Assets.Open("loading.gif");
+            byte[] bytes;
+            using (var memoryStream = new MemoryStream())
+            {
+                input.CopyTo(memoryStream);
+                bytes = memoryStream.ToArray();
+            }
+            view.SetBytes(bytes);
+            view.StartAnimation();
+        }
+
+        public void FinishLoader()
+        {
+            var view = FindViewById<GifImageView>(Resource.Id.dialogLoaderImageView);
+            view.StopAnimation();
+            view.Visibility = ViewStates.Gone;
+        }
 
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Layout.mainMenu, menu);
-            _menu = menu;
             return true;
         }
 
@@ -178,6 +205,12 @@ namespace CryptItMobile.Activities
             }
             _dialogListView.SetSelection(_dialogAdapter.Count);
 
+        }
+
+        public override void Finish()
+        {
+            base.Finish();
+            Window.SetSoftInputMode(SoftInput.StateHidden);
         }
     }
 }

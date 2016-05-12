@@ -7,6 +7,7 @@ using Android.Graphics;
 using Android.Net;
 using Android.Views;
 using Android.Widget;
+using CryptItMobile.Activities;
 using CryptItMobile.Model;
 using Model;
 using vkAPI;
@@ -21,9 +22,11 @@ namespace CryptItMobile.Adapters
         private List<AndroidUser> _allFriends;//список всех друзей, чтобы не грузить по несколько раз
         private FileWorker _fileWorker=new FileWorker();
         private MessageService _messageService = new MessageService();
+        private Context _ctx;
 
         public FriendsAdapter(Context context)
         {
+            _ctx = context;
             GetImageBitmapFromUrl();
             lInflater = (LayoutInflater)context.GetSystemService(Context.LayoutInflaterService);
         }
@@ -47,7 +50,10 @@ namespace CryptItMobile.Adapters
             {
                 view.FindViewById<ImageView>(Resource.Id.friendImageView).SetImageBitmap(_friends[position].Avatar);
             }
-            
+            else
+            {
+                view.FindViewById<ImageView>(Resource.Id.friendImageView).SetImageResource(Resource.Drawable.Camera);
+            }
 
             view.FindViewById<TextView>(Resource.Id.friendTextView).Text = _friends[position].User.FullName;
             if (_friends[position].User.Status == "Online")
@@ -112,6 +118,7 @@ namespace CryptItMobile.Adapters
 
             _allFriends =_allFriends.OrderBy(f => f.User.LastName).ToList();
             _friends = _allFriends.OrderBy(f => f.User.LastName).ToList();
+            ((MainActivity)_ctx).FinishLoader();
             NotifyDataSetChanged();
         }
 
@@ -127,7 +134,7 @@ namespace CryptItMobile.Adapters
             //else Вставить чего для торопыг, которые ищут, когда друзей еще не подгрузили
         }
 
-        private async void GetImageBitmapFromUrl() //todo Ïåðåíåñòè â îòäåëüíûé êëàññ, ñäåëàòü async
+        private async void GetImageBitmapFromUrl()
         {
             await GetFriends();
             Bitmap imageBitmap = null;
@@ -162,7 +169,7 @@ namespace CryptItMobile.Adapters
             }
         }
 
-        public void MessageStateChangedToRead(int lastReadId, int peerId)//todo ñèëüíî ïîäóìàòü
+        public void MessageStateChangedToRead(int lastReadId, int peerId)
         {
             var friend = _friends.FirstOrDefault(fr => fr.User.Id == peerId);
             if (friend != null)
