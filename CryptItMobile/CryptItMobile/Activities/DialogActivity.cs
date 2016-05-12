@@ -88,25 +88,6 @@ namespace CryptItMobile.Activities
                     isReady = true;
                 }
             };
-
-            //FindViewById<Button>(Resource.Id.exitDialogButton).Click += (sender, e) =>
-            //{
-            //    toast.Cancel();
-            //    var intent = new Intent(this, typeof(StartActivity));
-            //    LongPollServerService.Instance.GotNewMessageEvent -= NewMessage;
-            //    intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
-            //    StartActivity(intent);
-            //};
-
-            //FindViewById<Button>(Resource.Id.friendsDialogButton).Click +=
-            //    (sender, e) => //todo ѕопробовать переделать с помощью ActionBar.SetDisplayHomeAsUpEnabled(true);
-            //    {
-            //        toast.Cancel();
-            //        var intent = new Intent(this, typeof(MainActivity));
-            //        LongPollServerService.Instance.GotNewMessageEvent -= NewMessage;
-            //        intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
-            //        StartActivity(intent);
-            //    };
         }
 
 
@@ -172,6 +153,9 @@ namespace CryptItMobile.Activities
             //Ѕыл баг с полученем своих сообщений из другого одноврменно открытого клиента ¬  
             //(я в браузере пишу сообщение собеседнику 1, в приложении € в диалоге с собеседником 2. 
             //ѕолучаю в приложении свои сообщени€, адресованные собеседнику 1 в диалоге с собеседником 2)
+            if(message.ChatId!=0)
+                return;
+            
             if (message.UserId == _friendId || message.UserId == AuthorizeService.Instance.CurrentUserId)
             {
                 if (!message.Out)
@@ -190,8 +174,8 @@ namespace CryptItMobile.Activities
                         _myMessage = null;
                     }
                 }
+                _dialogAdapter.NewMessage(message);
             }
-            _dialogAdapter.NewMessage(message);
             _dialogListView.SetSelection(_dialogAdapter.Count);
 
         }
