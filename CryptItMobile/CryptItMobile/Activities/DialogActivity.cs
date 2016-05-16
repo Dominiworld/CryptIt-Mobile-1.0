@@ -38,6 +38,9 @@ namespace CryptItMobile.Activities
         private string _myMessage;
         private Toast toast;
 
+        static readonly int READ_REQUEST_CODE = 1337;
+
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -78,6 +81,13 @@ namespace CryptItMobile.Activities
                 _messageText.Text = string.Empty;
             };
 
+            var selectFileButton = FindViewById<ImageButton>(Resource.Id.select_file);
+            selectFileButton.Click += (sender, e) =>
+            {
+                var intent = new Intent(this, typeof (FileDialogActivity));
+                StartActivityForResult(intent, READ_REQUEST_CODE);
+            };
+
             //todo сделать loader
 
             bool isReady = true;
@@ -94,7 +104,6 @@ namespace CryptItMobile.Activities
                     isReady = true;
                 }
             };
-
         }
 
         private void StartLoader()
@@ -129,12 +138,22 @@ namespace CryptItMobile.Activities
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
             toast.Cancel();
-            var intent = item.ItemId == Resource.Id.exitMainButton ?
-                new Intent(this, typeof (StartActivity)) :
-                new Intent(this, typeof(MainActivity));
+            Intent intent = null;
+            switch (item.ItemId)
+            {
+                case Resource.Id.exitMainButton:
+                    intent = new Intent(this, typeof (StartActivity));
+                    break;
+                case Android.Resource.Id.Home:
+                    intent = new Intent(this, typeof(MainActivity));
+                    break;              
+                default:
+                    return base.OnOptionsItemSelected(item);
+            }
+
             LongPollServerService.Instance.GotNewMessageEvent -= NewMessage;
             intent.AddFlags(ActivityFlags.ClearTop).AddFlags(ActivityFlags.SingleTop);
-            StartActivity(intent);
+            StartActivity(intent);            
             return base.OnOptionsItemSelected(item);
         }
 
@@ -211,6 +230,14 @@ namespace CryptItMobile.Activities
         {
             base.Finish();
             Window.SetSoftInputMode(SoftInput.StateHidden);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+           if (requestCode == READ_REQUEST_CODE && resultCode == Result.Ok)
+            {
+                var file = data.GetStringExtra("file");
+            }
         }
     }
 }

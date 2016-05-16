@@ -8,8 +8,9 @@
         android:id="@+id/mainLoaderImageView"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:layout_marginTop="0.0dp" />
     <EditText
         android:paddingLeft="5dp"
         android:background="@color/backgroundMessage"

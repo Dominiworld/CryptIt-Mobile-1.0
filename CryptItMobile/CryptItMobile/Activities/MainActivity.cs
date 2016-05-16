@@ -21,6 +21,7 @@ namespace CryptItMobile.Activities
         private FriendsAdapter _friendsAdapter;
         private EditText _searchEditText;
 
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -58,10 +59,11 @@ namespace CryptItMobile.Activities
             _friendsListView.ItemClick += (sender, e) =>
             {
                 _friendsAdapter.SetFriendKey(e.Position);
-                var intent = new Intent(this, typeof(DialogActivity));
+                var intent = new Intent(this, typeof (DialogActivity));
                 intent.PutExtra("FriendId", _friendsAdapter.GetItemId(e.Position));
                 StartActivity(intent);
             };
+
 
         }
 

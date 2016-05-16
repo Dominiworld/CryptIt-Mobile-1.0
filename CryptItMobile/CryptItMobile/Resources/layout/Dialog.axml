@@ -23,8 +23,15 @@
             android:textSize="20sp"
             android:textColor="@color/textButton"
             android:layout_height="40dp"
-            android:layout_width="300dp"
+            android:layout_width="210dp"
             android:id="@+id/dialogFriendTextView" />
+        <ImageButton
+            android:src="@drawable/paperclip_icon"
+            android:layout_height="40dp"
+            android:layout_width="40dp"
+            android:scaleType="centerCrop"
+            android:layout_marginRight="5dp"
+            android:id="@+id/select_file" />
     </LinearLayout>
     <com.felipecsl.gifimageview.library.GifImageView
         android:id="@+id/dialogLoaderImageView"

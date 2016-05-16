@@ -51,8 +51,16 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
+    <Reference Include="Xamarin.Android.Support.v4, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xamarin.Android.Support.v4.23.2.1\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\FileDialogActivity.cs" />
+    <Compile Include="Adapters\FileListAdapter.cs" />
+    <Compile Include="FileListRowViewHolder.cs" />
+    <Compile Include="Helpers.cs" />
     <Compile Include="Adapters\DialogAdapter.cs" />
     <Compile Include="Adapters\FriendsAdapter.cs" />
     <Compile Include="Activities\DialogActivity.cs" />
@@ -69,7 +77,7 @@
     <None Include="Assets\AboutAssets.txt" />
     <AndroidResource Include="Resources\drawable\Icon.png" />
     <AndroidResource Include="Resources\layout\Dialog.axml">
-      <SubType>AndroidResource</SubType>
+      <SubType>Designer</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\FriendMessage.axml">
       <SubType>AndroidResource</SubType>
@@ -90,6 +98,8 @@
     <AndroidResource Include="Resources\layout\mainMenu.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout\file_picker_list_item.axml" />
+    <AndroidResource Include="Resources\layout\fileExplorer.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />
@@ -139,6 +149,24 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\loading.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="xamandroidsupportv4-18">
+      <Visible>False</Visible>
+      <Version>23.2.1</Version>
+    </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\file.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\folder.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\attach.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\paperclip_icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
