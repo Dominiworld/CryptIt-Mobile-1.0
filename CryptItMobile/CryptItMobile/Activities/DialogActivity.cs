@@ -221,8 +221,9 @@ namespace CryptItMobile.Activities
                     }
                 }
                 _dialogAdapter.NewMessage(message);
+                _dialogListView.SetSelection(_dialogAdapter.Count);
             }
-            _dialogListView.SetSelection(_dialogAdapter.Count);
+            
 
         }
 
