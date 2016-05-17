@@ -67,6 +67,12 @@ namespace vkAPI
 
             var url =
                 $"https://api.vk.com/method/messages.send?v=5.45&user_id={userId}&message={message.Body}&access_token={token}";
+            if (message.Attachments != null)
+            {
+                var attachments = message.Attachments.Select(a => a.Type + a.Document.OwnerId + "_" + a.Document.Id);
+                var attachmentString = string.Join(",", attachments);
+                url += $"&attachment={attachmentString}";
+            }
             var id = await GetUrl(url);
             return JsonConvert.DeserializeObject<int>(id["response"].ToString());
         }
@@ -79,6 +85,16 @@ namespace vkAPI
                 $"https://api.vk.com/method/messages.markAsRead?v=5.45&access_token={token}&peer_id={peerId}&message_ids={messageIdsString}";
             await GetUrl(url);
         }
+
+
+        public async Task RemoveMessage(int id)
+        {
+            var token = AuthorizeService.Instance.AccessToken;
+            var url =
+               $"https://api.vk.com/method/messages.delete?v=5.45&access_token={token}&message_ids={id}";
+            await GetUrl(url);
+        }
+
 
 
 

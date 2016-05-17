@@ -52,5 +52,20 @@ namespace vkAPI
                 return doc;
             }
         }
+
+        public async Task<Document> GetDocumentById(string fullId)
+        {
+            var token = AuthorizeService.Instance.AccessToken;
+            var url = $"https://api.vk.com/method/docs.getById?docs={fullId}&access_token={token}&v=5.45";
+            var objs = await GetUrl(url);
+            if (objs?["response"] == null)
+            {
+                return null;
+            }
+            var docs = JsonConvert.DeserializeObject<List<Document>>(objs["response"].ToString());
+            return docs?.FirstOrDefault();
+        }
     }
+
+
 }

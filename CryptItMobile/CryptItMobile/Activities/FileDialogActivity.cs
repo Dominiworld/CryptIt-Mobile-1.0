@@ -120,6 +120,6 @@ namespace CryptItMobile.Activities
             }
         }
 
-     
+    
     }
 }

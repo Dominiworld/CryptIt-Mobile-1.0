@@ -37,10 +37,9 @@ namespace CryptItMobile.Activities
         private int _friendId;
         private Message _myMessage=new Message();
         private Toast toast;
-        private FileWorker _fileWorker=new FileWorker();
+        private FileWorker _fileWorker = new FileWorker();
         static readonly int READ_REQUEST_CODE = 1337;
         private string _file;
-        private bool _fileUpload;
 
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -163,17 +162,17 @@ namespace CryptItMobile.Activities
         {
             _myMessage.Body = _messageText.Text;
             //добавляем полные имена файлов для расшифровки (#имя:ключ,имя:ключ)
-            if (_myMessage.Attachments != null && _myMessage.Attachments.Any())
-            {
-                _myMessage.Body += '#' + string.Join(",", _myMessage.Attachments.Select(a => a.Document.FileName + ":" + a.EncryptedSymmetricKey).ToList());
-            }
+            //if (_myMessage.Attachments != null && _myMessage.Attachments.Any())
+            //{
+            //    _myMessage.Body += '#' + string.Join(",", _myMessage.Attachments.Select(a => a.Document.FileName + ":" + a.EncryptedSymmetricKey).ToList());
+            //}
+
             Message cryptedMessage=new Message
             {
                 Body = CryptingTool.CryptTool.Instance.MakingEnvelope(_myMessage.Body),
                 UserId = _myMessage.UserId,
                 Attachments = _myMessage.Attachments
             };
-
 
             if (_fileUpload)
             {
@@ -278,14 +277,14 @@ namespace CryptItMobile.Activities
             }
 
 
-            var fileNameHash = CryptingTool.CryptTool.Instance.CreateHash(_file) + ".txt";
+            //var fileNameHash = CryptingTool.CryptTool.Instance.CreateHash(_file) + ".txt";
 
-            var key = CryptingTool.CryptTool.Instance.EncryptFile(_file, fileNameHash);
+           // var key = CryptingTool.CryptTool.Instance.EncryptFile(_file, fileNameHash);
             _fileUpload = false;
             _sendButton.Enabled = false;
 
             var uploadedFile = await _fileWorker.UploadFile(_file, _friendId, attachment);
-            File.Delete(fileNameHash);
+            //File.Delete(fileNameHash);
             if (uploadedFile == null)
             {
                 toast = Toast.MakeText(this, "Upload error!", ToastLength.Short);
@@ -301,7 +300,7 @@ namespace CryptItMobile.Activities
             attachment.Document.OwnerId = uploadedFile.OwnerId;
             attachment.Document.Url = uploadedFile.Url;
             attachment.Document.FileName = uploadedFile.FileName;
-            attachment.EncryptedSymmetricKey = key;
+            //attachment.EncryptedSymmetricKey = key;
             _myMessage.Attachments.Add(attachment);
             _fileUpload = true;
             _sendButton.Enabled = true;
@@ -309,6 +308,9 @@ namespace CryptItMobile.Activities
 
 
         }
+
+
+     
     }
 }
 
