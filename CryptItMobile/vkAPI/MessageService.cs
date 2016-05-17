@@ -94,7 +94,14 @@ namespace vkAPI
                $"https://api.vk.com/method/messages.delete?v=5.45&access_token={token}&message_ids={id}";
             await GetUrl(url);
         }
-
+        public async Task<Message> GetMessage(int id)
+        {
+            var token = AuthorizeService.Instance.AccessToken;
+            var url =
+               $"https://api.vk.com/method/messages.getById?v=5.45&access_token={token}&message_ids={id}";
+            var obj = await GetUrl(url);
+            return JsonConvert.DeserializeObject<Message>(obj["response"]["items"][0].ToString());
+        }
 
 
 

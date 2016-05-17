@@ -1,10 +1,17 @@
-﻿using Model;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Model;
 using Newtonsoft.Json;
 
 namespace vkAPI
 {
     public class LongPollServerService : BaseService
     {
+
+        private FileService _fileService = new FileService();
+        private MessageService _messageService = new MessageService();
         public static readonly LongPollServerService Instance = new LongPollServerService();
 
         public delegate void GotNewMessage(Message message);
@@ -54,6 +61,54 @@ namespace vkAPI
                                 Out = (int.Parse(update[2].ToString()) & 2) != 0, //+2 - OUTBOX   
                                 IsNotRead = (int.Parse(update[2].ToString()) & 1) != 0 //+1 - UNREAD
                             };
+                            var attachString = update[7].ToString()
+                              .Replace("\"", "")
+                              .Replace("\r\n", "")
+                              .Replace("}", "")
+                              .Replace("{", "")
+                              .Split(',');
+
+                            if (attachString.ToList().Count == 1 && attachString[0] == string.Empty)
+                            {
+                                GotNewMessageEvent?.Invoke(message);
+                                break;
+                            }
+
+
+                            var attachmentIds = attachString
+                                .Where(s => !s.Contains("type")).ToList()
+                                .Select(e => e.Split(':').Last().Trim(' ')).ToList();
+                            var types = attachString
+                               .Where(s => s.Contains("type")).ToList()
+                               .Select(e => e.Split(':').Last().Trim(' ')).ToList();
+
+                            if (attachmentIds.Count != types.Count)
+                            {
+                                GotNewMessageEvent?.Invoke(message);
+                                break;
+                            }
+
+                            var dict = new Dictionary<string, string>(); //id - type
+                            for (int i = 0; i < attachmentIds.Count; i++)
+                            {
+                                dict.Add(attachmentIds[i], types[i]);
+                            }
+
+                            var attachments = await GetFiles(dict);
+
+                            if (attachments.Any(a => a.Document != null && a.Document.Id == -1))
+                            {
+                                //значит произошла ошибка загрузки документа из-за недостатка прав
+                                message = await _messageService.GetMessage(message.Id);
+                                GotNewMessageEvent?.Invoke(message);
+                                break;
+                            }
+
+                            if (attachments != null)
+                            {
+                                message.Attachments = attachments;
+                            }
+
                             GotNewMessageEvent?.Invoke(message);
                             break;
                         //прочтение входящих сообщений
@@ -82,6 +137,14 @@ namespace vkAPI
 
                 }
             }
+        }
+
+        private async Task<List<Attachment>> GetFiles(Dictionary<string, string> dict)
+        {
+            var docsIds = dict.Where(i => i.Value == "doc").Select(i => i.Key).ToList();
+            var docs = await _fileService.GetDocuments(docsIds);
+            var attachments = docs.Select(doc => new Attachment { Document = doc, Type = "doc" }).ToList(); 
+            return attachments;
         }
     }
 }

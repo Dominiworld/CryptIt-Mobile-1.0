@@ -26,10 +26,9 @@ namespace CryptItMobile.Activities
         {
             base.OnCreate(bundle);
 
-            SetContentView(Resource.Layout.Main);
-            Window.SetSoftInputMode(SoftInput.StateHidden);
+          //  StartLoader();
+
             var fileWorker = new FileWorker(this);
-            StartLoader();
             if (!fileWorker.FillKeys())
             {
                 var toast = Toast.MakeText(this, Resource.String.KeyGeneration, ToastLength.Long);
@@ -38,6 +37,12 @@ namespace CryptItMobile.Activities
                 fileWorker.SavePrivateAndPublicKey();
             }
             fileWorker.AddFriendKeys();
+
+
+
+            SetContentView(Resource.Layout.Main);
+            Window.SetSoftInputMode(SoftInput.StateHidden);
+         
 
             _friendsListView = FindViewById<ListView>(Resource.Id.friendsListView);
             _friendsAdapter = new FriendsAdapter(this);
@@ -92,6 +97,7 @@ namespace CryptItMobile.Activities
         public override bool OnCreateOptionsMenu(IMenu menu)
         {
             MenuInflater.Inflate(Resource.Layout.mainMenu, menu);
+           
             return true;
         }
 

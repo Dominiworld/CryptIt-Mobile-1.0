@@ -65,6 +65,30 @@ namespace vkAPI
             var docs = JsonConvert.DeserializeObject<List<Document>>(objs["response"].ToString());
             return docs?.FirstOrDefault();
         }
+
+        public async Task<List<Document>> GetDocuments(List<string> fullIds)
+        {
+            if (!fullIds.Any() || (fullIds.Count == 1 && fullIds[0] == string.Empty))
+            {
+                return new List<Document>();
+            }
+            var token = AuthorizeService.Instance.AccessToken;
+            var ids = string.Join(",", fullIds);
+            var url = $"https://api.vk.com/method/docs.getById?docs={ids}&access_token={token}&v=5.45";
+            var objs = await GetUrl(url);
+            if (objs["response"] == null)
+            {
+                return new List<Document>();
+            }
+            var docs = JsonConvert.DeserializeObject<List<Document>>(objs["response"].ToString());
+            if (docs.Count == 0)
+            {
+                //для тех докуметов, которые не получены по причине недостатка прав - надо для подгрузки этого сообщения другим методом
+                docs.Add(new Document { Id = -1 });
+            }
+
+            return docs;
+        }
     }
 
 

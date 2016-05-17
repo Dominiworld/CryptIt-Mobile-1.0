@@ -40,7 +40,7 @@ namespace CryptItMobile.Activities
         private FileWorker _fileWorker;
         static readonly int READ_REQUEST_CODE = 1337;
         private string _file;
-        private bool _fileUpload;
+        private bool _fileUpload = true;
 
 
         protected override void OnCreate(Bundle savedInstanceState)

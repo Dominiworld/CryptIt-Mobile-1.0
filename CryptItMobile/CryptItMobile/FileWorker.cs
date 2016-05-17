@@ -63,7 +63,6 @@ namespace CryptItMobile
                             reader.Dispose();
                         }
                     }
-
                 }
                 return true;
             }
@@ -295,8 +294,8 @@ namespace CryptItMobile
                 // формируем объект File, который содержит путь к файлу
                 var fileName = attachment.Document.FileName;
                 File sdFile = new File(sdPath, fileName);
-                
-                if (fileName == message.UserId +"_" + PublicKeyFile)
+
+                if (fileName == message.UserId + "_public.txt")
                 {
                     using (var client = new WebClient())
                     {
