@@ -28,7 +28,7 @@ namespace CryptItMobile.Activities
 
             SetContentView(Resource.Layout.Main);
             Window.SetSoftInputMode(SoftInput.StateHidden);
-            var fileWorker = new FileWorker();
+            var fileWorker = new FileWorker(this);
             StartLoader();
             if (!fileWorker.FillKeys())
             {

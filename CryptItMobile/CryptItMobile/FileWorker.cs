@@ -24,9 +24,15 @@ namespace CryptItMobile
         private const string FriendsPublicKeysFile = "keys.txt";
         private const string Directory = "CryptIt Keys";
         private readonly string _requestKeyString = "Key request";
+        private readonly Context ctx;
 
         private FileService _fileService=new FileService();
         private MessageService _messageService = new MessageService();
+
+        public FileWorker(Context context)
+        {
+            ctx = context;
+        }
 
         public bool FillKeys()//Возвращает false если файла нет. Заполняет приватный и публичный ключ
         {
@@ -233,7 +239,7 @@ namespace CryptItMobile
         }
 
         //отправить свой ключ другу - автоматом
-        private async Task SendPublicKey(int userId, int messageToRemove, Context ctx)
+        private async Task SendPublicKey(int userId, int messageToRemove)
         {
             ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(ctx);
             //todo заполнить id файла!!!

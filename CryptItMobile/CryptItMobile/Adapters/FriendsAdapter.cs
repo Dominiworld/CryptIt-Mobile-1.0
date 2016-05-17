@@ -20,12 +20,13 @@ namespace CryptItMobile.Adapters
         private UserService _userService = new UserService();
         private List<AndroidUser> _friends;//Друзья отображаемые при поиске
         private List<AndroidUser> _allFriends;//список всех друзей, чтобы не грузить по несколько раз
-        private FileWorker _fileWorker=new FileWorker();
+        private FileWorker _fileWorker;
         private MessageService _messageService = new MessageService();
         private Context _ctx;
 
         public FriendsAdapter(Context context)
         {
+            _fileWorker = new FileWorker(context);
             _ctx = context;
             GetImageBitmapFromUrl();
             lInflater = (LayoutInflater)context.GetSystemService(Context.LayoutInflaterService);

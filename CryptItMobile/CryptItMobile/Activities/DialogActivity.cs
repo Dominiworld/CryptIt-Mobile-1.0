@@ -37,7 +37,7 @@ namespace CryptItMobile.Activities
         private int _friendId;
         private Message _myMessage=new Message();
         private Toast toast;
-        private FileWorker _fileWorker=new FileWorker();
+        private FileWorker _fileWorker;
         static readonly int READ_REQUEST_CODE = 1337;
         private string _file;
         private bool _fileUpload;
@@ -49,6 +49,7 @@ namespace CryptItMobile.Activities
 
             SetContentView(Resource.Layout.Dialog);
             // Create your application here
+            _fileWorker=new FileWorker(this);
             Window.SetSoftInputMode(SoftInput.StateHidden);
             ActionBar.SetDisplayHomeAsUpEnabled(true);
             ActionBar.SetDisplayShowTitleEnabled(false);
