@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Android.Content;
+using Android.Preferences;
 using Android.Util;
 using CryptingTool;
 using CryptItMobile.Model;
@@ -117,6 +119,7 @@ namespace CryptItMobile
             {
                 reader = new StreamReader(file);
                 writer.WriteLine(reader.ReadLine());
+                System.IO.File.Delete(file);//todo проверить удаление
             }
             writer.Close();
         }
@@ -192,7 +195,7 @@ namespace CryptItMobile
         }
 
         #region keys
-        private async void SendKeyRequest(int friendId)
+        private async void SendKeyRequest(int friendId)//todo возможно перенести
         {
             var message = new Message { Body = _requestKeyString };
             await _messageService.SendMessage(friendId, message);
@@ -230,26 +233,37 @@ namespace CryptItMobile
         }
 
         //отправить свой ключ другу - автоматом
-        private async Task SendPublicKey(int userId, int messageToRemove)
+        private async Task SendPublicKey(int userId, int messageToRemove, Context ctx)
         {
+            ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(ctx);
             //todo заполнить id файла!!!
-            int docIdPath = 0;
+            var docId = prefs.GetInt("file_id", 0);
 
             var id = AuthorizeService.Instance.CurrentUserId;
+ 
+            //берем ключ с документов вк 
+            Document doc = null;
 
-            //берем ключ с документов вк      
-            Document doc = (await _fileService.GetDocumentById(id + "_" + docIdPath));
+            File sdPath = Environment.ExternalStorageDirectory;
+            sdPath = new File(sdPath.AbsolutePath + "/" + Directory);
+            // формируем объект File, который содержит путь к файлу
+            File sdFile = new File(sdPath, PublicKeyFile);
 
+            if (docId != 0)
+            {
+                doc = await _fileService.GetDocumentById(id + "_" + docId);
+            }
             if (doc == null)
             {
-                //есл в документах нет, загружаем
-                //todo полный путь до публичного ключа!!!
-                if ((doc = await SavePublicKeyInVkDocs(Path.Combine(_keysPath, id + PublicKeyFile))) == null)
+                //если в документах нет, загружаем 
+                if ((doc = await SavePublicKeyInVkDocs(sdFile.AbsolutePath)) == null)
                     return;
 
-                // todo сохраняем id, чтобы потом файл с вк вытащить
-
+                var editor = prefs.Edit();
+                editor.PutInt("file_id", doc.Id);
+                editor.Commit();
             }
+
             var message = new Message
             {
                 Attachments = new List<Attachment>
@@ -270,18 +284,25 @@ namespace CryptItMobile
                 return;
             foreach (var attachment in message.Attachments)
             {
+
+                File sdPath = Environment.ExternalStorageDirectory;
+                // добавляем свой каталог к пути
+                sdPath = new File(sdPath.AbsolutePath + "/" + Directory);
+                // формируем объект File, который содержит путь к файлу
                 var fileName = attachment.Document.FileName;
+                File sdFile = new File(sdPath, fileName);
+
+                
                 if (fileName == message.UserId + PublicKeyFile)
                 {
                     using (var client = new WebClient())
                     {
                         //todo - скачивать в Crypt keys !!!!
-                        await client.DownloadFileTaskAsync(attachment.Document.Url, fileName);
+                        await client.DownloadFileTaskAsync(attachment.Document.Url, sdFile.AbsolutePath);
                         AddFriendKeys();
                         var user = new AndroidUser {User = new User {Id = userId}};
                         SetFriendKey(user);
                         CryptTool.Instance.keyRSARemote = user.PublicKey;
-                        //todo удалить файл
                     }
                 }
             }
