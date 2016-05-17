@@ -20,7 +20,7 @@ namespace CryptItMobile
     public class FileWorker
     {
         private const string PrivateKeyFile = "my_private.txt";
-        private const string PublicKeyFile = "my_public.txt";
+        private static readonly string PublicKeyFile = $"{AuthorizeService.Instance.CurrentUserId}_public.txt";
         private const string FriendsPublicKeysFile = "keys.txt";
         private const string Directory = "CryptIt Keys";
         private readonly string _requestKeyString = "Key request";
@@ -242,7 +242,6 @@ namespace CryptItMobile
         private async Task SendPublicKey(int userId, int messageToRemove)
         {
             ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(ctx);
-            //todo заполнить id файла!!!
             var docId = prefs.GetInt("file_id", 0);
 
             var id = AuthorizeService.Instance.CurrentUserId;
@@ -290,14 +289,12 @@ namespace CryptItMobile
                 return;
             foreach (var attachment in message.Attachments)
             {
-
                 File sdPath = Environment.ExternalStorageDirectory;
                 // добавляем свой каталог к пути
                 sdPath = new File(sdPath.AbsolutePath + "/" + Directory);
                 // формируем объект File, который содержит путь к файлу
                 var fileName = attachment.Document.FileName;
                 File sdFile = new File(sdPath, fileName);
-
                 
                 if (fileName == message.UserId +"_" + PublicKeyFile)
                 {

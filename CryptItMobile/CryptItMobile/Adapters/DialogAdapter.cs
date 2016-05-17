@@ -16,6 +16,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
         private List<Message> _messages;
         private MessageService _messageService = new MessageService();
         private LayoutInflater lInflater;
+        private FileWorker _fileWorker;
 
         private int _friendId;//todo подумать над этим
         private Context _ctx;//todo подумать над этим
@@ -27,6 +28,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             _messages=new List<Message>();
             GetMessages(_friendId);
             lInflater = (LayoutInflater)context.GetSystemService(Context.LayoutInflaterService);
+            _fileWorker = new FileWorker(_ctx);
         }
 
         public override int Count
@@ -118,6 +120,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             _messageService.MarkMessagesAsRead(messageList, friendId);
             ((DialogActivity) _ctx).FinishLoader();
             AddMessages(messages);
+            _fileWorker.ParseMessages(messages);
         }
 
     }

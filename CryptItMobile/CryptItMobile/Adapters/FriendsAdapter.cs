@@ -156,7 +156,7 @@ namespace CryptItMobile.Adapters
             GetDialogsInfo();
         }
 
-        public void NewMessage(Message message)
+        public async void NewMessage(Message message)
         {
             if (message.ChatId != 0)
                 return;
@@ -167,6 +167,8 @@ namespace CryptItMobile.Adapters
                 _friends.Remove(friend);
                 _friends.Insert(0, friend);
                 NotifyDataSetChanged();
+                await _fileWorker.FindKeyRequestAndReply(message);
+                await _fileWorker.GetKeyFileFromMessage(message);
             }
         }
 
