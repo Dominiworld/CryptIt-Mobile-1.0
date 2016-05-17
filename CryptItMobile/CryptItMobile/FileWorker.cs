@@ -201,14 +201,14 @@ namespace CryptItMobile
         }
 
         #region keys
-        private async void SendKeyRequest(int friendId)//todo возможно перенести
+        public async void SendKeyRequest(int friendId)//todo возможно перенести
         {
             var message = new Message { Body = _requestKeyString };
             await _messageService.SendMessage(friendId, message);
         }
 
         //поиск запроса ключа и ответ на него - вызывать для всех "новых" сообщений
-        private async Task<bool> FindKeyRequestAndReply(Message message)
+        public async Task<bool> FindKeyRequestAndReply(Message message)
         {
             if (message.Body == _requestKeyString && !message.Out)
             {
@@ -284,7 +284,7 @@ namespace CryptItMobile
         }
 
         //поиск файла с ключом среди сообщений - вызывать для всех "новых" сообщений
-        private async Task GetKeyFileFromMessage(Message message, int userId)
+        public async Task GetKeyFileFromMessage(Message message)
         {
             if (message.Attachments == null)
                 return;
@@ -299,14 +299,13 @@ namespace CryptItMobile
                 File sdFile = new File(sdPath, fileName);
 
                 
-                if (fileName == message.UserId + PublicKeyFile)
+                if (fileName == message.UserId +"_" + PublicKeyFile)
                 {
                     using (var client = new WebClient())
                     {
-                        //todo - скачивать в Crypt keys !!!!
                         await client.DownloadFileTaskAsync(attachment.Document.Url, sdFile.AbsolutePath);
                         AddFriendKeys();
-                        var user = new AndroidUser {User = new User {Id = userId}};
+                        var user = new AndroidUser {User = new User {Id = message.UserId } };
                         SetFriendKey(user);
                         CryptTool.Instance.keyRSARemote = user.PublicKey;
                     }
@@ -315,7 +314,7 @@ namespace CryptItMobile
         }
 
         //ищем в сообщениях запрос ключа и сам ключ
-        private async void ParseMessages(List<Message> messages, int userId)
+        public async void ParseMessages(List<Message> messages)
         {
             bool keySend = false;
             foreach (var message in messages)
@@ -326,7 +325,7 @@ namespace CryptItMobile
                 }                
                 if (CryptTool.Instance.keyRSARemote == null)
                 {
-                    await GetKeyFileFromMessage(message,userId);
+                    await GetKeyFileFromMessage(message);
                 }
                 if (keySend && CryptTool.Instance.keyRSARemote != null)
                     break;

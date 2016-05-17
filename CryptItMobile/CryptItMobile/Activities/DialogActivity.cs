@@ -87,8 +87,9 @@ namespace CryptItMobile.Activities
             var selectFileButton = FindViewById<ImageButton>(Resource.Id.select_file);
             selectFileButton.Click += (sender, e) =>
             {
-                var intent = new Intent(this, typeof (FileDialogActivity));
-                StartActivityForResult(intent, READ_REQUEST_CODE);
+                //var intent = new Intent(this, typeof (FileDialogActivity));
+                //StartActivityForResult(intent, READ_REQUEST_CODE);
+                _fileWorker.SendKeyRequest(_friendId);
             };
 
             //todo сделать loader
@@ -136,7 +137,6 @@ namespace CryptItMobile.Activities
             MenuInflater.Inflate(Resource.Layout.mainMenu, menu);
             return true;
         }
-
 
         public override bool OnOptionsItemSelected(IMenuItem item)
         {
@@ -198,6 +198,7 @@ namespace CryptItMobile.Activities
                 message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
             }
             _dialogAdapter.AddMessages(messages);
+            _fileWorker.ParseMessages(messages);
         }
 
         private async void GetFriend(int friendId)
@@ -218,7 +219,7 @@ namespace CryptItMobile.Activities
             }
         }
 
-        public void NewMessage(Message message)
+        public async void NewMessage(Message message)
         {
             //Был баг с полученем своих сообщений из другого одноврменно открытого клиента ВК 
             //(Я в браузере пишу сообщение собеседнику 1, в приложении я в диалоге с собеседником 2. 
@@ -234,6 +235,9 @@ namespace CryptItMobile.Activities
                     List<int> messageList = new List<int> {message.Id};
                     _messageService.MarkMessagesAsRead(messageList, message.UserId);
                     message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
+
+                    await _fileWorker.FindKeyRequestAndReply(message);
+                    await _fileWorker.GetKeyFileFromMessage(message);
                 }
                 else
                 {
