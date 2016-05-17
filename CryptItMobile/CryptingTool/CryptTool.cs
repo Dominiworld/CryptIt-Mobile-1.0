@@ -210,7 +210,7 @@ namespace CryptingTool
                 string symmetricKey = DecryptString(encryptedSymmetricKey);
                 if (symmetricKey == encryptedSymmetricKey)
                 {
-                    return message;
+                    return "Зашифрованное сообщение";
                 }
                 return Decrypt(receivedData, symmetricKey);
             }
@@ -223,7 +223,7 @@ namespace CryptingTool
                 string symmetricKey = DecryptString(encryptedSymmetricKey);
                 if (symmetricKey == encryptedSymmetricKey)
                 {
-                    return message;
+                    return "Зашифрованное сообщение";
                 }
                 return Decrypt(receivedData, symmetricKey);
             }
@@ -249,5 +249,113 @@ namespace CryptingTool
 
         #endregion
 
+        public string EncryptFile(string inputFile, string outputFile)
+        {
+            string symmetricKey = GetRandomString(8);
+            string encryptedSymmetricKey = EncryptString(symmetricKey);
+
+            //Шифруем любой тип файлов по алгоритму aes
+            RijndaelManaged aes = new RijndaelManaged();
+            byte[] IV = ASCIIEncoding.UTF8.GetBytes("ahjsyehwgsbckfbd");
+            try
+            {
+                byte[] key = ASCIIEncoding.UTF8.GetBytes(symmetricKey); //symmetricKey минимум 8 символов
+                using (FileStream fsCrypt = new FileStream(outputFile, FileMode.Create))
+                {
+                    using (CryptoStream cs = new CryptoStream(fsCrypt, aes.CreateEncryptor(key, IV),
+                        CryptoStreamMode.Write))
+                    {
+                        using (FileStream fsIn = new FileStream(inputFile, FileMode.Open))
+                        {
+                            int data;
+                            while ((data = fsIn.ReadByte()) != -1)
+                            {
+                                cs.WriteByte((byte)data);
+                            }
+                            aes.Clear();
+                        }
+                    }
+                }
+                return encryptedSymmetricKey;
+            }
+            catch (Exception)
+            {
+                //Console.WriteLine(ex.Message);
+                aes.Clear();
+                return null;
+            }
+
+        }
+
+        public void DecryptFile(string inputFile, string outputFile, string encryptedSymmetricKey)
+        {
+            if (File.Exists(inputFile))
+            {
+                // var fi = new FileInfo(inputFile);
+                //var encryptedSymmetricKey = extension.Substring(0,344);
+                // extension = extension.Substring(344);
+                string symmetricKey = DecryptString(encryptedSymmetricKey);
+                if (symmetricKey == encryptedSymmetricKey)
+                {
+                    //Console.WriteLine("Файл не может быть расшифрован данной парой ключей");
+                    return;
+                }
+                //string res = fi.Directory + @"\res" + extension;
+                RijndaelManaged aes = new RijndaelManaged();
+                try
+                {
+                    byte[] key = ASCIIEncoding.UTF8.GetBytes(symmetricKey);
+
+                    //byte[] ckey = mkey;
+                    byte[] cIV = ASCIIEncoding.UTF8.GetBytes("ahjsyehwgsbckfbd");
+
+                    using (FileStream fsCrypt = new FileStream(inputFile, FileMode.Open))
+                    {
+                        using (FileStream fsOut = new FileStream(outputFile, FileMode.Create))
+                        {
+                            using (
+                                CryptoStream cs = new CryptoStream(fsCrypt, aes.CreateDecryptor(key, cIV),
+                                    CryptoStreamMode.Read))
+                            {
+                                int data;
+                                while ((data = cs.ReadByte()) != -1)
+                                {
+                                    fsOut.WriteByte((byte)data);
+                                }
+                                aes.Clear();
+                            }
+                        }
+                    }
+                    File.Delete(inputFile);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    aes.Clear();
+                }
+            }
+        }
+
+        public string CreateHash(string str)
+        {
+            // создаем объект этого класса. 
+            MD5 md5Hasher = MD5.Create();
+
+            // Преобразуем входную строку в массив байт и вычисляем хэш
+            byte[] data = md5Hasher.ComputeHash(Encoding.Default.GetBytes(str));
+
+            // Создаем новый Stringbuilder (Изменяемую строку) для набора байт
+            StringBuilder sBuilder = new StringBuilder();
+
+            // Преобразуем каждый байт хэша в шестнадцатеричную строку
+            for (int i = 0; i < data.Length; i++)
+            {
+                //указывает, что нужно преобразовать элемент в шестнадцатиричную строку длиной в два символа
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+
+            return sBuilder.ToString();
+
+        }
     }
 }

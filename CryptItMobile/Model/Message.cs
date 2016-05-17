@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Newtonsoft.Json;
 
@@ -17,7 +18,7 @@ namespace Model
         {
             get
             {
-                DateTime dtDateTime = new DateTime(1970,1,1,0,0,0,0, DateTimeKind.Utc);
+                DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
                 return dtDateTime.AddSeconds(UnixTime).ToLocalTime();
             }
         }
@@ -28,11 +29,13 @@ namespace Model
         /// 0-полученное, 1-отправленное
         /// </summary>
         [JsonProperty("out")]
-        public bool Out { get; set;  }
+        public bool Out { get; set; }
         [JsonProperty("body")]
         public string Body { get; set; } //принятое сообщение
         public bool IsNotRead { get; set; }
-        
+
+        [JsonProperty("attachments")]
+        public List<Attachment> Attachments { get; set; }
 
     }
 }

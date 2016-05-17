@@ -157,11 +157,14 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f060003
 			public const int dialogLoaderImageView = 2131099651;
 			
+			// aapt resource value: 0x7f060012
+			public const int divider = 2131099666;
+			
 			// aapt resource value: 0x7f060006
 			public const int enterButton = 2131099654;
 			
-			// aapt resource value: 0x7f060013
-			public const int exitMainButton = 2131099667;
+			// aapt resource value: 0x7f060014
+			public const int exitMainButton = 2131099668;
 			
 			// aapt resource value: 0x7f060009
 			public const int file_explorer = 2131099657;
@@ -184,8 +187,8 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f06000a
 			public const int friendTextView = 2131099658;
 			
-			// aapt resource value: 0x7f060012
-			public const int friendsListView = 2131099666;
+			// aapt resource value: 0x7f060013
+			public const int friendsListView = 2131099667;
 			
 			// aapt resource value: 0x7f060010
 			public const int mainLoaderImageView = 2131099664;
@@ -193,14 +196,14 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f060005
 			public const int messageEditText = 2131099653;
 			
+			// aapt resource value: 0x7f060017
+			public const int myMessageIsReadTextView = 2131099671;
+			
 			// aapt resource value: 0x7f060016
-			public const int myMessageIsReadTextView = 2131099670;
+			public const int myMessageTextView = 2131099670;
 			
 			// aapt resource value: 0x7f060015
-			public const int myMessageTextView = 2131099669;
-			
-			// aapt resource value: 0x7f060014
-			public const int myMessageTimeTextView = 2131099668;
+			public const int myMessageTimeTextView = 2131099669;
 			
 			// aapt resource value: 0x7f06000d
 			public const int newMessageTextView = 2131099661;
@@ -214,8 +217,8 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f060002
 			public const int select_file = 2131099650;
 			
-			// aapt resource value: 0x7f060017
-			public const int webView = 2131099671;
+			// aapt resource value: 0x7f060018
+			public const int webView = 2131099672;
 			
 			static Id()
 			{

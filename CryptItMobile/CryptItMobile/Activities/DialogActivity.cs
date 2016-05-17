@@ -35,10 +35,12 @@ namespace CryptItMobile.Activities
         private UserService _userService = new UserService();
         private User _friend;
         private int _friendId;
-        private string _myMessage;
+        private Message _myMessage=new Message();
         private Toast toast;
-
+        private FileWorker _fileWorker=new FileWorker();
         static readonly int READ_REQUEST_CODE = 1337;
+        private string _file;
+        private bool _fileUpload;
 
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -159,9 +161,30 @@ namespace CryptItMobile.Activities
 
         private async void SendMessage(int friendId)
         {
-            _myMessage = _messageText.Text;
-            var cryptedMessage = CryptingTool.CryptTool.Instance.MakingEnvelope(_myMessage);
-            await _messageService.SendMessage(friendId, cryptedMessage);
+            _myMessage.Body = _messageText.Text;
+            //добавляем полные имена файлов для расшифровки (#имя:ключ,имя:ключ)
+            if (_myMessage.Attachments != null && _myMessage.Attachments.Any())
+            {
+                _myMessage.Body += '#' + string.Join(",", _myMessage.Attachments.Select(a => a.Document.FileName + ":" + a.EncryptedSymmetricKey).ToList());
+            }
+            Message cryptedMessage=new Message
+            {
+                Body = CryptingTool.CryptTool.Instance.MakingEnvelope(_myMessage.Body),
+                UserId = _myMessage.UserId,
+                Attachments = _myMessage.Attachments
+            };
+
+
+            if (_fileUpload)
+            {
+                await _messageService.SendMessage(friendId, cryptedMessage);
+            }
+            else
+            {
+                toast=Toast.MakeText(this, "File uploading", ToastLength.Short);
+                toast.Show();
+                Log.Debug("1", "toast!!!");
+            }
         }
 
         //Для остальных
@@ -216,8 +239,8 @@ namespace CryptItMobile.Activities
                     message.IsNotRead = true;
                     if (_myMessage!=null)
                     {
-                        message.Body = _myMessage;
-                        _myMessage = null;
+                        message.Body = _myMessage.Body;
+                        _myMessage = new Message();
                     }
                 }
                 _dialogAdapter.NewMessage(message);
@@ -237,8 +260,54 @@ namespace CryptItMobile.Activities
         {
            if (requestCode == READ_REQUEST_CODE && resultCode == Result.Ok)
             {
-                var file = data.GetStringExtra("file");
+                 _file = data.GetStringExtra("file");
+                AddAttachment();
             }
+        }
+
+        private async void AddAttachment()
+        {
+            var attachment = new Attachment
+            {
+                Document = new Document(),
+                Type = "doc"
+            };
+            if (_myMessage.Attachments == null)
+            {
+                _myMessage.Attachments = new List<Attachment>();
+            }
+
+
+            var fileNameHash = CryptingTool.CryptTool.Instance.CreateHash(_file) + ".txt";
+
+            var key = CryptingTool.CryptTool.Instance.EncryptFile(_file, fileNameHash);
+            _fileUpload = false;
+            _sendButton.Enabled = false;
+
+            var uploadedFile = await _fileWorker.UploadFile(_file, _friendId, attachment);
+            File.Delete(fileNameHash);
+            if (uploadedFile == null)
+            {
+                toast = Toast.MakeText(this, "Upload error!", ToastLength.Short);
+                toast.Show();
+                _fileUpload = true;
+                _sendButton.Enabled = true;
+
+                return;
+            }
+
+
+            attachment.Document.Id = uploadedFile.Id;
+            attachment.Document.OwnerId = uploadedFile.OwnerId;
+            attachment.Document.Url = uploadedFile.Url;
+            attachment.Document.FileName = uploadedFile.FileName;
+            attachment.EncryptedSymmetricKey = key;
+            _myMessage.Attachments.Add(attachment);
+            _fileUpload = true;
+            _sendButton.Enabled = true;
+
+
+
         }
     }
 }

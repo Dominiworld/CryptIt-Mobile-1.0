@@ -1,47 +1,56 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.IO;
-//using System.Linq;
-//using System.Net;
-//using System.Net.Http;
-//using System.Text;
-//using System.Threading.Tasks;
-//using System.Windows;
-//using Model;
-//using Newtonsoft.Json;
-//using Newtonsoft.Json.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using Model;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
-//namespace vkAPI
-//{
-//    public class FileService
-//    {
-//        MessageService _messageService = new MessageService();
+namespace vkAPI
+{
+    public class FileService: BaseService
+    {
+        MessageService _messageService = new MessageService();
+        private string _token = AuthorizeService.Instance.AccessToken;
 
-//        public async Task<string> UploadFile(string fileName, int userId) //returns file url
-//        {
-//            using (var client = new System.Net.WebClient())
-//            {
-//                var token = AuthorizeService.Instance.AccessToken;
-//                var u = "https://api.vk.com/method/docs.getUploadServer?access_token=" + token;
-//                var r = await client.DownloadStringTaskAsync(u);
-//                var j = JsonConvert.DeserializeObject(r) as JObject;
-                
-//                var u2 = j["response"]["upload_url"].ToString();
-//                var r2 = Encoding.UTF8.GetString(await client.UploadFileTaskAsync(u2, "POST", fileName));
-//                var j2 = JsonConvert.DeserializeObject(r2) as JObject;
-//                if (j2["file"] == null)
-//                {
-//                    MessageBoxResult errorDialog = MessageBox.Show("Ошибка загрузки файла");
-//                    return null;
-//                }
-//                //
-//                var u3 = "https://api.vk.com/method/docs.save?access_token=" + token
-//                         + "&file=" + j2["file"];
-//                var r3 = await client.DownloadStringTaskAsync(u3);
+        public async Task<string> GetUploadUrl(string fileName)
+        {
+            using (var client = new WebClient())
+            {
+                var u = "https://api.vk.com/method/docs.getUploadServer?access_token=" + _token;
+                var r = await client.DownloadStringTaskAsync(u);
+                var j = JsonConvert.DeserializeObject(r) as JObject;
 
-//                var j3 = JsonConvert.DeserializeObject(r3) as JObject;
-//                return j3["response"][0]["url"].ToString();
-//            }
-//        }
-//    }
-//}
+                return j["response"]["upload_url"].ToString();
+            }
+        }
+
+
+
+        public async Task<Document> UploadFile(string fileName, byte[] file)
+        {
+            using (var client = new System.Net.WebClient())
+            {
+                var r2 = Encoding.UTF8.GetString(file);
+
+                var j2 = JsonConvert.DeserializeObject(r2) as JObject;
+                if (j2["file"] == null)
+                {
+                    return null;
+                }
+
+                var u3 = "https://api.vk.com/method/docs.save?v=5.45&access_token=" + _token
+                         + "&file=" + j2["file"];
+                var docObj = await GetUrl(u3);
+                //todo проверка ошибки на капчу
+                var doc = JsonConvert.DeserializeObject<Document>(docObj["response"][0].ToString());
+                return doc;
+            }
+        }
+    }
+}

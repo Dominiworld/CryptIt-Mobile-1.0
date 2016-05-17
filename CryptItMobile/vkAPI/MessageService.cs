@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace vkAPI
 {
-    public class MessageService:BaseService
+    public class MessageService : BaseService
     {
         private UserService _userService;
         public MessageService()
@@ -24,17 +24,17 @@ namespace vkAPI
             var obj = JsonConvert.DeserializeObject((await GetUrl(url)).ToString()) as JObject;
             var items = obj?["response"]?["items"].ToList();
 
-            if (items == null ||items.Count == 0)
-                return dialogsInfo;  
-              
+            if (items == null || items.Count == 0)
+                return dialogsInfo;
+
             dialogsInfo.AddRange(
                     items.Select(item => JsonConvert.DeserializeObject<DialogInfo>(item.ToString())));
 
-           
+
             return dialogsInfo;
         }
 
-        public async Task<IEnumerable<Message>> GetDialog(int userId,int offset = 0)
+        public async Task<IEnumerable<Message>> GetDialog(int userId, int offset = 0)
         {
             var token = AuthorizeService.Instance.AccessToken;
             var url = $"https://api.vk.com/method/messages.getHistory?user_id={userId}&v=5.45&access_token={token}&offset={offset}";
@@ -42,7 +42,7 @@ namespace vkAPI
             var messages = JsonConvert.DeserializeObject<List<Message>>(obj["response"]["items"].ToString());
             var lastPeerReadId = JsonConvert.DeserializeObject<int>(obj["response"]["out_read"].ToString());
 
-            if (messages.Count!=0)
+            if (messages.Count != 0)
             {
                 var otherUser = await _userService.GetUser(messages[0].UserId);
                 foreach (var message in messages.ToArray())
@@ -53,11 +53,11 @@ namespace vkAPI
                         message.IsNotRead = true;
                     }
                 }
-            }          
+            }
             return messages;
         }
 
-        public async Task<int> SendMessage(int userId, string message)
+        public async Task<int> SendMessage(int userId, Message message)
         {
             if (message == null)
             {
@@ -66,8 +66,8 @@ namespace vkAPI
             var token = AuthorizeService.Instance.AccessToken;
 
             var url =
-                $"https://api.vk.com/method/messages.send?v=5.45&user_id={userId}&message={message}&access_token={token}";
-            var id =  await GetUrl(url);
+                $"https://api.vk.com/method/messages.send?v=5.45&user_id={userId}&message={message.Body}&access_token={token}";
+            var id = await GetUrl(url);
             return JsonConvert.DeserializeObject<int>(id["response"].ToString());
         }
 
@@ -80,7 +80,7 @@ namespace vkAPI
             await GetUrl(url);
         }
 
-       
+
 
     }
 }

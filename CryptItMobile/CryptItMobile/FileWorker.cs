@@ -2,7 +2,9 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Views;
@@ -11,10 +13,10 @@ using Android.Util;
 using Java.IO;
 using CryptingTool;
 using CryptItMobile.Model;
+using Model;
 using vkAPI;
 using Environment = Android.OS.Environment;
 using File = Java.IO.File;
-using FileNotFoundException = Java.IO.FileNotFoundException;
 
 namespace CryptItMobile
 {
@@ -24,6 +26,7 @@ namespace CryptItMobile
         private const string PublicKeyFile = "my_public.txt";
         private const string FriendsPublicKeysFile = "keys.txt";
         private const string Directory = "CryptIt Keys";
+        private FileService _fileService=new FileService();
 
         public bool FillKeys()//Возвращает false если файла нет. Заполняет приватный и публичный ключ
         {
@@ -143,6 +146,68 @@ namespace CryptItMobile
                     return;
                 }
 
+            }
+        }
+
+        public async Task<Document> UploadFile(string fileName, int userId, Attachment attachment)
+        {
+
+            using (var client = new WebClient())
+            {
+                var url = await _fileService.GetUploadUrl(fileName);
+                //client.UploadProgressChanged += (sender, args) =>
+                //{
+                //    attachment.Progress = 100 * (float)args.BytesSent / args.TotalBytesToSend;
+                //};
+                //client.UploadFileCompleted += (sender, args) =>
+                //{
+
+                //    attachment.IsNotCompleted = false;
+                //};
+
+                //_cancelFileUploadEvent += attachment1 =>
+                //{
+                //    if (attachment.File == attachment1.File)
+                //    {
+                //        client.CancelAsync();
+                //        client.Dispose();
+                //    }
+                //};
+
+                byte[] file = null;
+                try
+                {
+                    file = await client.UploadFileTaskAsync(url, fileName);
+                }
+                catch (WebException ex)
+                {
+                    Log.Debug("ex", ex.Message);
+                    return null;
+                }
+                return await _fileService.UploadFile(fileName, file);
+            }
+        }
+
+        public void TakeFileNamesFromBody(Message message)
+        {
+            if (message.Attachments != null && message.Attachments.Any())
+            {
+                //парсим имена файлов (текст#имя_файла1,имя_файла2)
+                var probablyFiles = message.Body.Split('#').Last();
+                var cryptedfileNamesWithKeys = probablyFiles.Split(',').ToList();
+                //todo условие может поломаться!!!
+                if (!message.Body.Contains('#') || cryptedfileNamesWithKeys.Count != message.Attachments.Count ||
+                    (string.IsNullOrEmpty(cryptedfileNamesWithKeys[0]) && cryptedfileNamesWithKeys.Count == 1))
+                    //сообщение не шифрованное или ошибка
+                    return;
+                message.Body = message.Body.Substring(0, message.Body.Length - probablyFiles.Length - 1);
+                foreach (var attachment in message.Attachments) //восстанавливаем имена зашифрованных из message.body
+                {
+                    var items = cryptedfileNamesWithKeys[message.Attachments.IndexOf(attachment)].Split(':');
+                    attachment.Document.FileName = items[0];
+                    attachment.IsEncrypted = true;
+                    attachment.EncryptedSymmetricKey = items[1];
+                }
             }
         }
     }
