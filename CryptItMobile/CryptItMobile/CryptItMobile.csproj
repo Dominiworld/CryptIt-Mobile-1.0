@@ -54,10 +54,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\FileDialogActivity.cs" />
+    <Compile Include="Adapters\DialogAdapter.cs" />
     <Compile Include="Adapters\FileListAdapter.cs" />
     <Compile Include="FileListRowViewHolder.cs" />
     <Compile Include="Helpers.cs" />
-    <Compile Include="Adapters\DialogAdapter.cs" />
     <Compile Include="Adapters\FriendsAdapter.cs" />
     <Compile Include="Activities\DialogActivity.cs" />
     <Compile Include="Activities\MainActivity.cs" />
@@ -153,10 +153,7 @@
     <AndroidResource Include="Resources\drawable\folder.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\attach.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\drawable\paperclip_icon.png" />
+    <AndroidResource Include="Resources\drawable\paperclip_icon.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
