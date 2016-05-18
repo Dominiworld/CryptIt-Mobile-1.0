@@ -1,7 +1,9 @@
+using System;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Util;
 using Android.Views;
 using Android.Webkit;
 using Java.Net;
@@ -19,6 +21,13 @@ namespace CryptItMobile.Activities
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+
+            AppDomain domain = AppDomain.CurrentDomain;
+            domain.UnhandledException += (sender, args) =>
+            {
+                Log.Debug("EXCEPTION", args.ExceptionObject.ToString());
+            };
+           
             RequestWindowFeature(WindowFeatures.NoTitle);
 
             // Create your application here
@@ -41,7 +50,7 @@ namespace CryptItMobile.Activities
 
             public override bool ShouldOverrideUrlLoading(WebView view, string url)
             {
-                view.LoadUrl(url);
+              
                 var parseRef = new URL(url).Ref;
                 if (parseRef != null)
                 {

@@ -19,11 +19,11 @@ namespace CryptItMobile
 {
     public class FileWorker
     {
-        private const string PrivateKeyFile = "my_private.txt";
+        private static readonly string PrivateKeyFile = $"{AuthorizeService.Instance.CurrentUserId}_private.txt";
         private static readonly string PublicKeyFile = $"{AuthorizeService.Instance.CurrentUserId}_public.txt";
         private const string FriendsPublicKeysFile = "keys.txt";
         private const string Directory = "CryptIt Keys";
-        private readonly string _requestKeyString = "Key request";
+        public readonly string _requestKeyString = "Key request";
         private readonly Context ctx;
 
         private FileService _fileService=new FileService();
@@ -61,10 +61,12 @@ namespace CryptItMobile
                         {
                             CryptTool.Instance.keyRSAPublic = Convert.FromBase64String(data[1]);
                             reader.Dispose();
+                            return true;
                         }
                     }
+                    return false;
                 }
-                return true;
+                return false;
             }
             catch (System.IO.DirectoryNotFoundException)
             {
@@ -78,6 +80,11 @@ namespace CryptItMobile
 
         public void SavePrivateAndPublicKey()
         {
+            ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(ctx);
+            var editor = prefs.Edit();
+            editor.PutInt("file_id", 0);
+            editor.Commit();
+
             //todo Сделать вариант при остутствии sd карты
             // получаем путь к SD
             File sdPath = Environment.ExternalStorageDirectory;
@@ -98,7 +105,7 @@ namespace CryptItMobile
             writer.Close();
         }
 
-        public void AddFriendKeys()
+        public void AddFriendKeys(int userId = 0)
         {
             // получаем путь к SD
             File sdPath = Environment.ExternalStorageDirectory;
@@ -118,13 +125,39 @@ namespace CryptItMobile
                 files.Where(
                     f => !f.EndsWith(PublicKeyFile) && !f.EndsWith(PrivateKeyFile) && !f.EndsWith(FriendsPublicKeysFile))
                     .ToArray();
+
+
             StreamReader reader;
-            StreamWriter writer = new StreamWriter(sdFile.AbsolutePath);
+            List<string> keysFile = new List<string>();
+            try
+            {
+                reader = new StreamReader(sdFile.AbsolutePath);
+                string line = null;
+                
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (int.Parse(line.Split(' ')[0]) != userId)
+                    {
+                        keysFile.Add(line);
+                    }
+                }
+                reader.Close();
+            }
+            catch (Exception)
+            {
+                //ignored             
+            }
+           
+            StreamWriter writer = new StreamWriter(sdFile.AbsolutePath,false);
             foreach (var file in files)
             {
                 reader = new StreamReader(file);
                 writer.WriteLine(reader.ReadLine());
                 System.IO.File.Delete(file);//todo проверить удаление
+            }
+            foreach (var l in keysFile)
+            {
+                writer.WriteLine(l);
             }
             writer.Close();
         }
@@ -200,19 +233,14 @@ namespace CryptItMobile
         }
 
         #region keys
-        public async void SendKeyRequest(int friendId)//todo возможно перенести
-        {
-            var message = new Message { Body = _requestKeyString };
-            await _messageService.SendMessage(friendId, message);
-        }
+
 
         //поиск запроса ключа и ответ на него - вызывать для всех "новых" сообщений
         public async Task<bool> FindKeyRequestAndReply(Message message)
         {
             if (message.Body == _requestKeyString && !message.Out)
             {
-                await SendPublicKey(message.UserId, message.Id);
-                return true;
+                return await SendPublicKey(message.UserId, message.Id);               
             }
             return false;
         }
@@ -237,8 +265,8 @@ namespace CryptItMobile
             }
         }
 
-        //отправить свой ключ другу - автоматом
-        private async Task SendPublicKey(int userId, int messageToRemove)
+        //отправить свой ключ другу - автоматом (получилось или нет)
+        private async Task<bool> SendPublicKey(int userId, int messageToRemove)
         {
             ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(ctx);
             var docId = prefs.GetInt("file_id", 0);
@@ -261,7 +289,7 @@ namespace CryptItMobile
             {
                 //если в документах нет, загружаем 
                 if ((doc = await SavePublicKeyInVkDocs(sdFile.AbsolutePath)) == null)
-                    return;
+                    return false;
 
                 var editor = prefs.Edit();
                 editor.PutInt("file_id", doc.Id);
@@ -276,8 +304,14 @@ namespace CryptItMobile
                 },
                 Body = "key"
             };
-            await _messageService.SendMessage(userId, message);
-            await _messageService.RemoveMessage(messageToRemove);
+            
+            var messageId = await _messageService.SendMessage(userId, message);
+            if (messageId != 0)
+            {
+                await _messageService.RemoveMessage(messageToRemove);
+                return true;
+            }
+            return false;
 
         }
 
@@ -299,7 +333,16 @@ namespace CryptItMobile
                 {
                     using (var client = new WebClient())
                     {
-                        await client.DownloadFileTaskAsync(attachment.Document.Url, sdFile.AbsolutePath);
+                        try
+                        {
+                            await client.DownloadFileTaskAsync(attachment.Document.Url, sdFile.AbsolutePath);
+                        }
+                        catch (Exception)
+                        {
+                            //не получилось скачать ключ
+                            Log.Debug("KEY DOWNLOAD ERROR", "KEY DOWNLOAD ERROR");
+                            return;
+                        }
                         AddFriendKeys();
                         var user = new AndroidUser {User = new User {Id = message.UserId } };
                         SetFriendKey(user);
@@ -309,8 +352,8 @@ namespace CryptItMobile
             }
         }
 
-        //ищем в сообщениях запрос ключа и сам ключ
-        public async void ParseMessages(List<Message> messages)
+        //ищем в сообщениях запрос ключа и сам ключ - return true if key is send
+        public async Task<bool> ParseMessages(List<Message> messages)
         {
             bool keySend = false;
             foreach (var message in messages)
@@ -326,7 +369,7 @@ namespace CryptItMobile
                 if (keySend && CryptTool.Instance.keyRSARemote != null)
                     break;
             }
-
+            return keySend;
         }
         #endregion keys
 

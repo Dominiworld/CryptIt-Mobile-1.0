@@ -45,7 +45,16 @@ namespace vkAPI
                 obj = await GetUrl(url);
 
                 var updates = JsonConvert.DeserializeObject<LongPoolServerResponse>(obj.ToString());
+
                 connectionSettings.TS = updates.Ts;
+
+                if (connectionSettings.TS == 0)
+                {
+                    obj = await GetUrl(url);
+                    connectionSettings = JsonConvert.DeserializeObject<LongPollConnectionSettings>(obj["response"].ToString());
+                }
+                if (updates.Updates == null)
+                    continue;
 
                 foreach (var update in updates.Updates)
                 {

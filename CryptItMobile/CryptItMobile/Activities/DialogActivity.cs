@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,27 +30,35 @@ namespace CryptItMobile.Activities
 
         private ListView _dialogListView;
         private DialogAdapter _dialogAdapter;
-        private Button _sendButton;
+        public Button _sendButton;
         private EditText _messageText;
         private MessageService _messageService = new MessageService();
         private UserService _userService = new UserService();
         private User _friend;
         private int _friendId;
-        private Message _myMessage=new Message();
+        public Message _myMessage=new Message();
         private Toast toast;
         private FileWorker _fileWorker;
         static readonly int READ_REQUEST_CODE = 1337;
         private string _file;
         private bool _fileUpload = true;
+        public readonly string _requestKeyString = "Key request";
 
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
+
             SetContentView(Resource.Layout.Dialog);
+
+            AppDomain domain = AppDomain.CurrentDomain;
+            domain.UnhandledException += (sender, args) =>
+            {
+                Log.Debug("EXCEPTION", args.ExceptionObject.ToString());
+            };
             // Create your application here
-            _fileWorker=new FileWorker(this);
+            _fileWorker =new FileWorker(this);
             Window.SetSoftInputMode(SoftInput.StateHidden);
             ActionBar.SetDisplayHomeAsUpEnabled(true);
             ActionBar.SetDisplayShowTitleEnabled(false);
@@ -73,7 +82,7 @@ namespace CryptItMobile.Activities
             if (CryptingTool.CryptTool.Instance.keyRSARemote == null)
             {
                 _sendButton.Enabled = false;
-                toast.Show();
+                 toast.Show();
             }
 
             _messageText = FindViewById<EditText>(Resource.Id.messageEditText);
@@ -89,7 +98,8 @@ namespace CryptItMobile.Activities
             {
                 //var intent = new Intent(this, typeof (FileDialogActivity));
                 //StartActivityForResult(intent, READ_REQUEST_CODE);
-                _fileWorker.SendKeyRequest(_friendId);
+                 SendKeyRequest(_friendId);
+                _myMessage = new Message {Body = _requestKeyString};
             };
 
             //todo сделать loader
@@ -113,7 +123,6 @@ namespace CryptItMobile.Activities
         private void StartLoader()
         {
             var view = FindViewById<GifImageView>(Resource.Id.dialogLoaderImageView);
-
             var input = Assets.Open("loading.gif");
             byte[] bytes;
             using (var memoryStream = new MemoryStream())
@@ -122,6 +131,7 @@ namespace CryptItMobile.Activities
                 bytes = memoryStream.ToArray();
             }
             view.SetBytes(bytes);
+            view.Visibility = ViewStates.Visible;
             view.StartAnimation();
         }
 
@@ -164,17 +174,16 @@ namespace CryptItMobile.Activities
         {
             _myMessage.Body = _messageText.Text;
             //добавляем полные имена файлов для расшифровки (#имя:ключ,имя:ключ)
-            if (_myMessage.Attachments != null && _myMessage.Attachments.Any())
-            {
-                _myMessage.Body += '#' + string.Join(",", _myMessage.Attachments.Select(a => a.Document.FileName + ":" + a.EncryptedSymmetricKey).ToList());
-            }
+            //if (_myMessage.Attachments != null && _myMessage.Attachments.Any())
+            //{
+            //    _myMessage.Body += '#' + string.Join(",", _myMessage.Attachments.Select(a => a.Document.FileName + ":" + a.EncryptedSymmetricKey).ToList());
+            //}
             Message cryptedMessage=new Message
             {
                 Body = CryptingTool.CryptTool.Instance.MakingEnvelope(_myMessage.Body),
                 UserId = _myMessage.UserId,
                 Attachments = _myMessage.Attachments
             };
-
 
             if (_fileUpload)
             {
@@ -236,8 +245,16 @@ namespace CryptItMobile.Activities
                     _messageService.MarkMessagesAsRead(messageList, message.UserId);
                     message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
 
-                    await _fileWorker.FindKeyRequestAndReply(message);
+                    var sentKey = await _fileWorker.FindKeyRequestAndReply(message);
+                    if (sentKey)
+                    {
+                        _myMessage.Body = "key";
+                    }
                     await _fileWorker.GetKeyFileFromMessage(message);
+                    if (CryptingTool.CryptTool.Instance.keyRSARemote!=null)
+                    {
+                        _sendButton.Enabled = true;
+                    }
                 }
                 else
                 {
@@ -261,6 +278,7 @@ namespace CryptItMobile.Activities
             Window.SetSoftInputMode(SoftInput.StateHidden);
         }
 
+        //не используется - нет интерфейса для подгрузки файлов
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
            if (requestCode == READ_REQUEST_CODE && resultCode == Result.Ok)
@@ -270,6 +288,7 @@ namespace CryptItMobile.Activities
             }
         }
 
+       //не используется - нет интерфейса для подгрузки файлов
         private async void AddAttachment()
         {
             var attachment = new Attachment
@@ -312,6 +331,18 @@ namespace CryptItMobile.Activities
             _sendButton.Enabled = true;
 
 
+
+        }
+
+        public async void SendKeyRequest(int friendId)//todo возможно перенести
+        {
+            var message = new Message { Body = _requestKeyString };
+            var id = await _messageService.SendMessage(friendId, message);
+            if (id == 0)
+            {
+                toast.SetText("Не удалось запросить ключ. Попробуйте позже.");
+                toast.Show();
+            }
 
         }
     }

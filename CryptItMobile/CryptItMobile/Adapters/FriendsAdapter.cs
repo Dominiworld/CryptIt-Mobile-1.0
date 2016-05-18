@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -98,7 +99,16 @@ namespace CryptItMobile.Adapters
 
         private async Task GetFriends()
         {
-            var users = (await _userService.GetFriends(AuthorizeService.Instance.CurrentUserId)).ToList();
+            List<User> users;
+            try
+            {
+                users = (await _userService.GetFriends(AuthorizeService.Instance.CurrentUserId)).ToList();
+            }
+            catch (Exception)
+            {
+                Toast.MakeText(_ctx, "Ошибка соединения. Попробуйте перезапустить приложение.", ToastLength.Short);
+                return;
+            }
             _allFriends = new List<AndroidUser>();
 
             foreach (var friend in users)
@@ -110,13 +120,7 @@ namespace CryptItMobile.Adapters
                 });
 
             }
-
-            _allFriends.Add(new AndroidUser
-            {
-                Avatar = null,
-                User = AuthorizeService.Instance.CurrentUser
-            });
-
+           
             _allFriends =_allFriends.OrderBy(f => f.User.LastName).ToList();
             _friends = _allFriends.OrderBy(f => f.User.LastName).ToList();
             ((MainActivity)_ctx).FinishLoader();

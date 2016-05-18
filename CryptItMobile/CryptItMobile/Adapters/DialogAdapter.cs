@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Android.App;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
@@ -120,7 +121,15 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             _messageService.MarkMessagesAsRead(messageList, friendId);
             ((DialogActivity) _ctx).FinishLoader();
             AddMessages(messages);
-            _fileWorker.ParseMessages(messages);
+            var sentKey = await _fileWorker.ParseMessages(messages);
+            if (sentKey)
+            {
+                ((DialogActivity)_ctx)._myMessage.Body = _fileWorker._requestKeyString;
+            }
+            if (CryptingTool.CryptTool.Instance.keyRSARemote != null)
+            {
+                ((DialogActivity) _ctx)._sendButton.Enabled = true;
+            }
         }
 
     }

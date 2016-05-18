@@ -17,6 +17,7 @@ namespace CryptingTool
         public string _isCryptedFlag = "ъйьz";
         private string _mobileFlag = "h1m1";
         private string _desktopFlag = "h2m2";
+        private string _encryptedMessage = "Зашифрованное сообщение";
 
 
 
@@ -197,6 +198,10 @@ namespace CryptingTool
 
             if (des != _isCryptedFlag)
                 return message;
+
+            if (keyRSARemote == null)
+                return _encryptedMessage;
+
             string des2 = message.Substring(_isCryptedFlag.Length, _mobileFlag.Length);
 
             var enc = Encoding.GetEncoding(1252);
@@ -210,7 +215,7 @@ namespace CryptingTool
                 string symmetricKey = DecryptString(encryptedSymmetricKey);
                 if (symmetricKey == encryptedSymmetricKey)
                 {
-                    return "Зашифрованное сообщение";
+                    return _encryptedMessage;
                 }
                 return Decrypt(receivedData, symmetricKey);
             }
@@ -223,7 +228,7 @@ namespace CryptingTool
                 string symmetricKey = DecryptString(encryptedSymmetricKey);
                 if (symmetricKey == encryptedSymmetricKey)
                 {
-                    return "Зашифрованное сообщение";
+                    return _encryptedMessage;
                 }
                 return Decrypt(receivedData, symmetricKey);
             }

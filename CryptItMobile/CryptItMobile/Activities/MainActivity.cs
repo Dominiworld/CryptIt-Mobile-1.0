@@ -1,9 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
+using Android.Util;
 using Android.Views;
 using Android.Widget;
 using CryptItMobile.Adapters;
@@ -26,7 +28,12 @@ namespace CryptItMobile.Activities
         {
             base.OnCreate(bundle);
 
-          //  StartLoader();
+            AppDomain domain = AppDomain.CurrentDomain;
+            domain.UnhandledException += (sender, args) =>
+            {
+                Log.Debug("EXCEPTION", args.ExceptionObject.ToString());
+            };
+            //  StartLoader();
 
             var fileWorker = new FileWorker(this);
             if (!fileWorker.FillKeys())
