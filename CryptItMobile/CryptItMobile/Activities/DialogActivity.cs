@@ -259,16 +259,15 @@ namespace CryptItMobile.Activities
                 else
                 {
                     message.IsNotRead = true;
-                    if (_myMessage!=null)
+                    if (_myMessage?.Body!=null)
                     {
                         message.Body = _myMessage.Body;
                         _myMessage = new Message();
                     }
                 }
                 _dialogAdapter.NewMessage(message);
-                _dialogListView.SetSelection(_dialogAdapter.Count);
+               _dialogListView.SetSelection(_dialogAdapter.Count-1);
             }
-            
 
         }
 
