@@ -326,6 +326,9 @@ namespace CryptItMobile
                 // добавляем свой каталог к пути
                 sdPath = new File(sdPath.AbsolutePath + "/" + Directory);
                 // формируем объект File, который содержит путь к файлу
+                if (attachment.Document == null)
+                    continue;
+                
                 var fileName = attachment.Document.FileName;
                 File sdFile = new File(sdPath, fileName);
 
