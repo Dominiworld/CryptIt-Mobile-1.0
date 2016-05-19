@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,18 +34,28 @@ namespace vkAPI
         {
             var token = AuthorizeService.Instance.AccessToken;
 
-            var url =
+            var mainurl =
                 $"https://api.vk.com/method/messages.getLongPollServer?v=5.45&use_ssl={useSsl}&need_pts={needPts}&access_token={token}";
-            var obj = await GetUrl(url);
+            var obj = await GetUrl(mainurl);
             var connectionSettings = JsonConvert.DeserializeObject<LongPollConnectionSettings>(obj["response"].ToString());
 
             while (connectionSettings.TS != 0)
             {
-                url =
+                var url =
                     $"http://{connectionSettings.Adress}?act=a_check&key={connectionSettings.Key}&ts={connectionSettings.TS}&wait=25&mode=2";
                 obj = await GetUrl(url);
 
-                var updates = JsonConvert.DeserializeObject<LongPoolServerResponse>(obj.ToString());
+                LongPoolServerResponse updates;
+                try
+                {
+                    updates = JsonConvert.DeserializeObject<LongPoolServerResponse>(obj.ToString());
+                }
+                catch (Exception)
+                {
+                    obj = await GetUrl(mainurl);
+                    connectionSettings = JsonConvert.DeserializeObject<LongPollConnectionSettings>(obj["response"].ToString());
+                    updates = JsonConvert.DeserializeObject<LongPoolServerResponse>(obj.ToString());
+                }
 
                 connectionSettings.TS = updates.Ts;
 
