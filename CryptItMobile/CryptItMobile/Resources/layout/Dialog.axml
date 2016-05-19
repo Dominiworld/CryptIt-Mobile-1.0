@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@drawable/rectangle_rounded_all">
+        android:background="@color/endButton">
         <ImageView
             android:layout_height="50dp"
             android:layout_width="50dp"
@@ -22,15 +22,18 @@
             android:paddingTop="10dp"
             android:textSize="20sp"
             android:textColor="@color/textButton"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_width="210dp"
             android:id="@+id/dialogFriendTextView" />
         <ImageButton
+            android:background="@color/endButton"
             android:src="@drawable/paperclip_icon"
             android:layout_height="40dp"
             android:layout_width="40dp"
             android:scaleType="centerCrop"
             android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:id="@+id/select_file" />
     </LinearLayout>
     <com.felipecsl.gifimageview.library.GifImageView

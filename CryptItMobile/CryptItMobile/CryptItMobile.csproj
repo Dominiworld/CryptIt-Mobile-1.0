@@ -90,7 +90,6 @@
     <AndroidResource Include="Resources\drawable\rectangle_rounded_all.axml" />
     <AndroidResource Include="Resources\drawable\rectangle_rounded_bottom.axml" />
     <AndroidResource Include="Resources\drawable\rectangle_rounded_top.axml" />
-    <AndroidResource Include="Resources\drawable\Thumbs.db" />
     <AndroidResource Include="Resources\layout\mainMenu.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
@@ -124,7 +123,9 @@
     <AndroidResource Include="Resources\drawable\online.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\values\Colors.xml" />
+    <AndroidResource Include="Resources\values\Colors.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\button.xml">
@@ -153,7 +154,7 @@
     <AndroidResource Include="Resources\drawable\folder.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\drawable\paperclip_icon.jpg" />
+    <AndroidResource Include="Resources\drawable\paperclip_icon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
