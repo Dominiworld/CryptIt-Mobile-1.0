@@ -288,6 +288,9 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f050007
 			public const int KeyGeneration = 2131034119;
 			
+			// aapt resource value: 0x7f050008
+			public const int NoKey = 2131034120;
+			
 			// aapt resource value: 0x7f050006
 			public const int NoPublicKey = 2131034118;
 			
