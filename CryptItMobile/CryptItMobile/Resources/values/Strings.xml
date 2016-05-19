@@ -8,4 +8,5 @@
     <string name="InputMessage">Введите сообщение...</string>
     <string name="NoPublicKey">Запросите публичный ключ собеседника!</string>
   <string name="KeyGeneration">Происходит генерация ключей. Пожалуйста подождите</string>
+  <string name="NoKey">Не удалось запросить ключ. Попробуйте позже.</string>
 </resources>

@@ -339,7 +339,7 @@ namespace CryptItMobile.Activities
             var id = await _messageService.SendMessage(friendId, message);
             if (id == 0)
             {
-                toast.SetText("Не удалось запросить ключ. Попробуйте позже.");
+                toast.SetText(Resource.String.NoKey);
                 toast.Show();
             }
 
