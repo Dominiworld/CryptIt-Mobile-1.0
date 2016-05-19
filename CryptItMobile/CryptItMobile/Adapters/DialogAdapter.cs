@@ -75,7 +75,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
                     _messages[position].Date.ToString();
                 if (_messages[position].IsNotRead)
                 {
-                    view.FindViewById<LinearLayout>(Resource.Id.myMessageIsRead).SetBackgroundResource(Resource.Color.silver);//todo Здесь прочитанность
+                    view.FindViewById<LinearLayout>(Resource.Id.myMessageIsRead).SetBackgroundColor(Color.AliceBlue);//todo Здесь прочитанность
                 }
                 else
                 {
