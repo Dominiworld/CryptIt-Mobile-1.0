@@ -193,14 +193,14 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f060005
 			public const int messageEditText = 2131099653;
 			
+			// aapt resource value: 0x7f060015
+			public const int myMessageIsRead = 2131099669;
+			
 			// aapt resource value: 0x7f060017
-			public const int myMessageIsReadTextView = 2131099671;
+			public const int myMessageTextView = 2131099671;
 			
 			// aapt resource value: 0x7f060016
-			public const int myMessageTextView = 2131099670;
-			
-			// aapt resource value: 0x7f060015
-			public const int myMessageTimeTextView = 2131099669;
+			public const int myMessageTimeTextView = 2131099670;
 			
 			// aapt resource value: 0x7f06000d
 			public const int newMessageTextView = 2131099661;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
+using Android.Graphics;
 using Android.Views;
 using Android.Widget;
 using CryptItMobile.Activities;
@@ -72,11 +73,14 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
                 view.FindViewById<TextView>(Resource.Id.myMessageTextView).Text = _messages[position].Body;
                 view.FindViewById<TextView>(Resource.Id.myMessageTimeTextView).Text =
                     _messages[position].Date.ToString();
-                if (!_messages[position].IsNotRead)
+                if (_messages[position].IsNotRead)
                 {
-                    view.FindViewById<TextView>(Resource.Id.myMessageIsReadTextView).Visibility=ViewStates.Invisible;//todo Здесь прочитанность
+                    view.FindViewById<LinearLayout>(Resource.Id.myMessageIsRead).SetBackgroundResource(Resource.Color.silver);//todo Здесь прочитанность
                 }
-                
+                else
+                {
+                    view.FindViewById<LinearLayout>(Resource.Id.myMessageIsRead).SetBackgroundColor(Color.White);
+                }
             }
             return view;
         }

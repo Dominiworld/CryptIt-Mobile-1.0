@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/myMessageIsRead">
     <TextView
         android:gravity="right"
         android:paddingRight="5dp"
@@ -24,9 +25,4 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/myMessageTextView" />
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="Is not read"
-        android:id="@+id/myMessageIsReadTextView" />
 </LinearLayout>
