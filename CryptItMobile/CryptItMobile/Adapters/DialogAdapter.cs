@@ -124,7 +124,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             var sentKey = await _fileWorker.ParseMessages(messages);
             if (sentKey)
             {
-                ((DialogActivity)_ctx)._myMessage.Body = _fileWorker._requestKeyString;
+                ((DialogActivity)_ctx)._myMessage.Body = "key";
             }
             if (CryptingTool.CryptTool.Instance.keyRSARemote != null)
             {
