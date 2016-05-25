@@ -285,11 +285,17 @@ namespace CryptItMobile
 			// aapt resource value: 0x7f050004
 			public const int InputName = 2131034116;
 			
+			// aapt resource value: 0x7f050008
+			public const int KeyFileUploadError = 2131034120;
+			
 			// aapt resource value: 0x7f050007
 			public const int KeyGeneration = 2131034119;
 			
-			// aapt resource value: 0x7f050008
-			public const int NoKey = 2131034120;
+			// aapt resource value: 0x7f050009
+			public const int KeyMessageSendError = 2131034121;
+			
+			// aapt resource value: 0x7f05000a
+			public const int KeyRequestSendError = 2131034122;
 			
 			// aapt resource value: 0x7f050006
 			public const int NoPublicKey = 2131034118;

@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
@@ -11,8 +12,16 @@ namespace vkAPI
             using (var client = new System.Net.WebClient())
             {
                 client.Encoding = Encoding.UTF8;
-                var response = await client.DownloadStringTaskAsync(url);
-                return JObject.Parse(response);
+                try
+                {
+                    var response = await client.DownloadStringTaskAsync(url);
+                    return JObject.Parse(response);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+               
             }
         }
     }

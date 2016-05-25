@@ -171,8 +171,8 @@ namespace CryptItMobile.Adapters
                 _friends.Remove(friend);
                 _friends.Insert(0, friend);
                 NotifyDataSetChanged();
-                await _fileWorker.FindKeyRequestAndReply(message);
-                await _fileWorker.GetKeyFileFromMessage(message);
+                //await _fileWorker.FindKeyRequestAndReply(message);
+                //await _fileWorker.GetKeyFileFromMessage(message);
             }
         }
 

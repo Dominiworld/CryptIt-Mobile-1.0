@@ -245,11 +245,27 @@ namespace CryptItMobile.Activities
                     _messageService.MarkMessagesAsRead(messageList, message.UserId);
                     message.Body = CryptingTool.CryptTool.Instance.SplitAndUnpackReceivedMessage(message.Body);
 
-                    var sentKey = await _fileWorker.FindKeyRequestAndReply(message);
-                    if (sentKey)
+                    var sentKeyResult = await _fileWorker.FindKeyRequestAndReply(message);
+
+                    switch (sentKeyResult)
                     {
-                        _myMessage.Body = "key";
+                        case 1: //отправлен ответ на request
+                            _myMessage.Body = "key";
+                            break;
+                        case 0: //не найден request
+                            break;
+                        case -1: //не удалось загрузить(получить) файл с ключом для отправки
+                            toast.SetText(Resource.String.KeyFileUploadError);
+                            toast.Duration = ToastLength.Short;
+                            toast.Show();
+                            break;
+                        case -2: //не удалось отправить сообщение
+                            toast.SetText(Resource.String.KeyMessageSendError);
+                            toast.Duration = ToastLength.Short;
+                            toast.Show();
+                            break;                           
                     }
+                    
                     await _fileWorker.GetKeyFileFromMessage(message);
                     if (CryptingTool.CryptTool.Instance.keyRSARemote!=null)
                     {
@@ -333,13 +349,14 @@ namespace CryptItMobile.Activities
 
         }
 
-        public async void SendKeyRequest(int friendId)//todo возможно перенести
+        public async void SendKeyRequest(int friendId)
         {
             var message = new Message { Body = _requestKeyString };
             var id = await _messageService.SendMessage(friendId, message);
             if (id == 0)
             {
-                toast.SetText(Resource.String.NoKey);
+                toast.SetText(Resource.String.KeyRequestSendError);
+                toast.Duration = ToastLength.Long;
                 toast.Show();
             }
 

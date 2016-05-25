@@ -234,15 +234,23 @@ namespace CryptItMobile
 
         #region keys
 
-
-        //поиск запроса ключа и ответ на него - вызывать для всех "новых" сообщений
-        public async Task<bool> FindKeyRequestAndReply(Message message)
+        /// <summary>
+        /// поиск запроса ключа и ответ на него - вызывать для всех "новых" сообщений
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns>
+        /// 1 - найден request, отправлен ответ
+        /// 0 - не найден request
+        /// -1 - не загрузился файл с ключом
+        /// -2 - не отправилось сообщение
+        /// </returns>
+        public async Task<int> FindKeyRequestAndReply(Message message)
         {
             if (message.Body == _requestKeyString && !message.Out)
             {
                 return await SendPublicKey(message.UserId, message.Id);               
             }
-            return false;
+            return 0;
         }
 
         //загрузка своего ключа в документы
@@ -265,8 +273,17 @@ namespace CryptItMobile
             }
         }
 
-        //отправить свой ключ другу - автоматом (получилось или нет)
-        private async Task<bool> SendPublicKey(int userId, int messageToRemove)
+        /// <summary>
+        /// отправить свой ключ другу - автоматом
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="messageToRemove"></param>
+        /// <returns>
+        /// 1 - послан ответ на request
+        /// -1 - не загрузился файл с ключом
+        /// -2 - не отправилось сообщение
+        /// </returns>
+        private async Task<int> SendPublicKey(int userId, int messageToRemove)
         {
             ISharedPreferences prefs = PreferenceManager.GetDefaultSharedPreferences(ctx);
             var docId = prefs.GetInt("file_id", 0);
@@ -289,7 +306,7 @@ namespace CryptItMobile
             {
                 //если в документах нет, загружаем 
                 if ((doc = await SavePublicKeyInVkDocs(sdFile.AbsolutePath)) == null)
-                    return false;
+                    return -1;
 
                 var editor = prefs.Edit();
                 editor.PutInt("file_id", doc.Id);
@@ -309,10 +326,9 @@ namespace CryptItMobile
             if (messageId != 0)
             {
                 await _messageService.RemoveMessage(messageToRemove);
-                return true;
+                return 1;
             }
-            return false;
-
+            return -2;
         }
 
         //поиск файла с ключом среди сообщений - вызывать для всех "новых" сообщений
@@ -355,13 +371,21 @@ namespace CryptItMobile
             }
         }
 
-        //ищем в сообщениях запрос ключа и сам ключ - return true if key is send
-        public async Task<bool> ParseMessages(List<Message> messages)
+        /// <summary>
+        ///ищем в сообщениях запрос ключа и сам ключ
+        /// </summary>
+        /// <param name="messages"></param>
+        /// <returns>
+        /// 1 - послан ответ на request
+        /// -1 - не загрузился файл с ключом
+        /// -2 - не отправилось сообщение
+        /// </returns>
+        public async Task<int> ParseMessages(List<Message> messages)
         {
-            bool keySend = false;
+            int keySend = 0;
             foreach (var message in messages)
             {
-                if (!keySend)
+                if (keySend==0)
                 {
                     keySend = await FindKeyRequestAndReply(message);
                 }                
@@ -369,7 +393,7 @@ namespace CryptItMobile
                 {
                     await GetKeyFileFromMessage(message);
                 }
-                if (keySend && CryptTool.Instance.keyRSARemote != null)
+                if (keySend!=0 && CryptTool.Instance.keyRSARemote != null)
                     break;
             }
             return keySend;

@@ -45,6 +45,8 @@ namespace vkAPI
                     $"http://{connectionSettings.Adress}?act=a_check&key={connectionSettings.Key}&ts={connectionSettings.TS}&wait=25&mode=2";
                 obj = await GetUrl(url);
 
+                
+
                 LongPoolServerResponse updates;
                 try
                 {
@@ -62,7 +64,15 @@ namespace vkAPI
                 if (connectionSettings.TS == 0)
                 {
                     obj = await GetUrl(url);
-                    connectionSettings = JsonConvert.DeserializeObject<LongPollConnectionSettings>(obj["response"].ToString());
+                    try
+                    {
+                        connectionSettings = JsonConvert.DeserializeObject<LongPollConnectionSettings>(obj["response"].ToString());
+                    }
+                    catch (Exception)
+                    {
+                        
+                        throw;
+                    }
                 }
                 if (updates.Updates == null)
                     continue;
