@@ -75,8 +75,7 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
                     _messages[position].Date.ToString();
                 if (_messages[position].IsNotRead)
                 {
-                    view.FindViewById<LinearLayout>(Resource.Id.myMessageIsRead).SetBackgroundColor(Color.AliceBlue);
-                    //view.FindViewById<LinearLayout>(Resource.Id.myMessageIsRead).SetBackgroundResource(Resource.Color);//todo Здесь прочитанность
+                    view.FindViewById<LinearLayout>(Resource.Id.myMessageIsRead).SetBackgroundColor(Color.AliceBlue);//todo Здесь прочитанность
                 }
                 else
                 {
@@ -126,21 +125,10 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             _messageService.MarkMessagesAsRead(messageList, friendId);
             ((DialogActivity) _ctx).FinishLoader();
             AddMessages(messages);
-            var sentKeyResult = await _fileWorker.ParseMessages(messages);
-
-            switch (sentKeyResult)
+            var sentKey = await _fileWorker.ParseMessages(messages);
+            if (sentKey)
             {
-                case 1: //отправлен ответ на request
-                    ((DialogActivity)_ctx)._myMessage.Body = "key";
-                    break;
-                case 0: //не найден request
-                    break;
-                case -1: //не удалось загрузить(получить) файл с ключом для отправки
-                    Toast.MakeText(_ctx, Resource.String.KeyFileUploadError, ToastLength.Short).Show();
-                    break;
-                case -2: //не удалось отправить сообщение
-                    Toast.MakeText(_ctx, Resource.String.KeyMessageSendError, ToastLength.Short).Show();
-                    break;
+                ((DialogActivity)_ctx)._myMessage.Body = "key";
             }
             if (CryptingTool.CryptTool.Instance.keyRSARemote != null)
             {
