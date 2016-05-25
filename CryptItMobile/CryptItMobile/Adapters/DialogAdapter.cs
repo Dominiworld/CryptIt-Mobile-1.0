@@ -125,10 +125,21 @@ namespace CryptItMobile.Adapters//todo Решить баг при прокрутке до конца списка 
             _messageService.MarkMessagesAsRead(messageList, friendId);
             ((DialogActivity) _ctx).FinishLoader();
             AddMessages(messages);
-            var sentKey = await _fileWorker.ParseMessages(messages);
-            if (sentKey)
+            var sentKeyResult = await _fileWorker.ParseMessages(messages);
+
+            switch (sentKeyResult)
             {
-                ((DialogActivity)_ctx)._myMessage.Body = "key";
+                case 1: //отправлен ответ на request
+                    ((DialogActivity)_ctx)._myMessage.Body = "key";
+                    break;
+                case 0: //не найден request
+                    break;
+                case -1: //не получилось отправить файл с ключом
+                    Toast.MakeText(_ctx, Resource.String.KeyFileUploadError, ToastLength.Short).Show();
+                    break;
+                case -2: //не получилось отправить сообщение с ключом
+                    Toast.MakeText(_ctx, Resource.String.KeyMessageSendError, ToastLength.Short).Show();
+                    break;
             }
             if (CryptingTool.CryptTool.Instance.keyRSARemote != null)
             {
