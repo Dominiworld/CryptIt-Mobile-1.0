@@ -37,7 +37,17 @@ namespace vkAPI
             var mainurl =
                 $"https://api.vk.com/method/messages.getLongPollServer?v=5.45&use_ssl={useSsl}&need_pts={needPts}&access_token={token}";
             var obj = await GetUrl(mainurl);
-            var connectionSettings = JsonConvert.DeserializeObject<LongPollConnectionSettings>(obj["response"].ToString());
+            LongPollConnectionSettings connectionSettings;
+            try
+            {
+                connectionSettings = JsonConvert.DeserializeObject<LongPollConnectionSettings>(obj["response"].ToString());
+            }
+            catch (Exception)
+            {
+                obj = await GetUrl(mainurl);
+                connectionSettings = JsonConvert.DeserializeObject<LongPollConnectionSettings>(obj["response"].ToString());
+                throw;
+            }
 
             while (connectionSettings.TS != 0)
             {

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -33,27 +35,28 @@ namespace CryptItMobile.Activities
             {
                 Log.Debug("EXCEPTION", args.ExceptionObject.ToString());
             };
-            //  StartLoader();
+            // StartLoader();
 
-            var fileWorker = new FileWorker(this);
-            if (!fileWorker.FillKeys())
-            {
-                var toast = Toast.MakeText(this, Resource.String.KeyGeneration, ToastLength.Long);
-                toast.Show();
-                CryptTool.Instance.CreateRSAKey();
-                fileWorker.SavePrivateAndPublicKey();
-            }
-            fileWorker.AddFriendKeys();
-
-
-
+            //if (!fileWorker.FillKeys())
+            //{
+            //    GenerateKeys(fileWorker);
+            //   // var gen = new GenerateKeys(fileWorker);
+            //   // gen.Execute();
+            //    //var toast = Toast.MakeText(this, Resource.String.KeyGeneration, ToastLength.Long);
+            //    //toast.Show();
+            //    //CryptTool.Instance.CreateRSAKey();
+            //    //fileWorker.SavePrivateAndPublicKey();
+            //}
+            ////fileWorker.AddFriendKeys();
             SetContentView(Resource.Layout.Main);
             Window.SetSoftInputMode(SoftInput.StateHidden);
-         
 
             _friendsListView = FindViewById<ListView>(Resource.Id.friendsListView);
             _friendsAdapter = new FriendsAdapter(this);
             _friendsListView.Adapter = _friendsAdapter;
+
+            var fileWorker = new FileWorker(this);
+            GenerateKeys(fileWorker);
 
             LongPollServerService.Instance.ConnectToLongPollServer();
 
@@ -75,11 +78,26 @@ namespace CryptItMobile.Activities
                 intent.PutExtra("FriendId", _friendsAdapter.GetItemId(e.Position));
                 StartActivity(intent);
             };
-
-
         }
 
-        private void StartLoader()
+        private async void GenerateKeys(FileWorker fileWorker)
+        {
+            StartLoader();
+            if (!fileWorker.FillKeys())
+            {
+                await Task.Run(() =>
+                {
+                    CryptTool.Instance.CreateRSAKey();
+                    fileWorker.SavePrivateAndPublicKey();
+                });
+            }
+            fileWorker.AddFriendKeys();
+            await _friendsAdapter.GetFriends();
+            FinishLoader();
+            _friendsAdapter.GetImageBitmapFromUrl();
+        }
+
+        public void StartLoader()
         {
             var view = FindViewById<GifImageView>(Resource.Id.mainLoaderImageView);
 

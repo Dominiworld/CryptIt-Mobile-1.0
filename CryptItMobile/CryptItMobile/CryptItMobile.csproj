@@ -57,6 +57,7 @@
     <Compile Include="Adapters\DialogAdapter.cs" />
     <Compile Include="Adapters\FileListAdapter.cs" />
     <Compile Include="FileListRowViewHolder.cs" />
+    <Compile Include="GenerateKeys.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Adapters\FriendsAdapter.cs" />
     <Compile Include="Activities\DialogActivity.cs" />

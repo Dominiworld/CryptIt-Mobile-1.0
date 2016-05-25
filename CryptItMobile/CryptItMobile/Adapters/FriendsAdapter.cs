@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Android.Content;
 using Android.Graphics;
@@ -29,7 +30,7 @@ namespace CryptItMobile.Adapters
         {
             _fileWorker = new FileWorker(context);
             _ctx = context;
-            GetImageBitmapFromUrl();
+            //GetImageBitmapFromUrl();
             lInflater = (LayoutInflater)context.GetSystemService(Context.LayoutInflaterService);
         }
 
@@ -83,7 +84,6 @@ namespace CryptItMobile.Adapters
             return null;
         }
 
-
         public override int Count
         {
             get
@@ -97,7 +97,7 @@ namespace CryptItMobile.Adapters
             }
         }
 
-        private async Task GetFriends()
+        public async Task GetFriends()
         {
             List<User> users;
             try
@@ -123,7 +123,6 @@ namespace CryptItMobile.Adapters
            
             _allFriends =_allFriends.OrderBy(f => f.User.LastName).ToList();
             _friends = _allFriends.OrderBy(f => f.User.LastName).ToList();
-            ((MainActivity)_ctx).FinishLoader();
             NotifyDataSetChanged();
         }
 
@@ -139,9 +138,12 @@ namespace CryptItMobile.Adapters
             //else Вставить чего для торопыг, которые ищут, когда друзей еще не подгрузили
         }
 
-        private async void GetImageBitmapFromUrl()
+        public async void GetImageBitmapFromUrl()
         {
-            await GetFriends();
+            //((MainActivity)_ctx).StartLoader();           
+            //await GetFriends();
+            //((MainActivity)_ctx).FinishLoader();
+
             Bitmap imageBitmap = null;
 
             using (var webClient = new WebClient())
